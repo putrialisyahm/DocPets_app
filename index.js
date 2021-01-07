@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({
 //set static assets to public directory
 app.use(express.static('public'));
 
-app.use('/', userRoutes); // If access localhost:3000, it will be go to userRoutes
+app.use('/user', userRoutes); // If access localhost:3000, it will be go to userRoutes
 
 // Server running on port 3000
 app.listen(3000, () => {

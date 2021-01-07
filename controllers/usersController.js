@@ -5,6 +5,34 @@ const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 // UsersController class declaration
 class UsersController {
 
+  async signup(newUser, req, res, next) {
+    // get the req.user from passport authentication
+
+    const body = {
+      _id: newUser[0].dataValues.id,
+    };
+
+    // create jwt token from body variable
+    const token = jwt.sign(
+      {
+        newUser: body,
+      },
+      "secret_password"
+    );
+    const userInfo = {
+      email: newUser[0].dataValues.email,
+      foto: "/img/" + newUser[0].dataValues.foto,
+      nama: newUser[0].dataValues.nama,
+
+    }
+    // success to create token
+    res.status(200).json({
+      user: userInfo,
+      message: "Signup success!",
+      token: token,
+    });
+  }
+
   // If user pass the signup or login authorization, it will go to this function to create and get token
   async login(user, req, res) {
     try {

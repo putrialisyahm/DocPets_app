@@ -1,22 +1,22 @@
 {
   "development": {
-    "username": "root",
-    "password": "root",
-    "database": "users_development",
+    "username": "ilhamrecca",
+    "password": "clannad",
+    "database": "vet_development",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": "root",
-    "database": "users_test",
+    "password": null,
+    "database": "database_test",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
-    "password": "root",
-    "database": "users_production",
+    "password": null,
+    "database": "vet",
     "host": "127.0.0.1",
     "dialect": "mysql"
   }

@@ -1,11 +1,10 @@
-const bcrypt = require('bcrypt');
-
 'use strict';
 const {
   Model
 } = require('sequelize');
+const bcrypt = require("bcrypt"); // Import bcrypt
 module.exports = (sequelize, DataTypes) => {
-  class user extends Model {
+  class User extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -15,27 +14,45 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  user.init({
-    // email is unique and string type
+  User.init({
+    nama: {
+      type: DataTypes.STRING,
+      require: true,
+    },
     email: {
       type: DataTypes.STRING,
-      unique: true
+      require: true,
     },
-    // password must be hashing
     password: {
       type: DataTypes.STRING,
+      require: true,
       set(value) {
         // Storing passwords in plaintext in the database is terrible.
         // Hashing the value with an appropriate cryptographic hash function is better.
         this.setDataValue('password', bcrypt.hashSync(value, 10));
       }
     },
-    role: DataTypes.STRING // role is a string
+    telepon: {
+      type: DataTypes.STRING,
+      require: true,
+    },
+    foto: {
+      type: DataTypes.STRING,
+      defaultValue: "default.png",
+      get() {
+        const rawValue = this.getDataValue(foto);
+        return "/img/" + rawValue;
+      }
+    },
+    role: {
+      type: DataTypes.STRING,
+      require: true,
+    }
   }, {
     sequelize,
     paranoid: true, // Activate softdelete
     timestamps: true, // Activate timestamps
-    modelName: 'user',
+    modelName: 'User',
   });
-  return user;
+  return User;
 };

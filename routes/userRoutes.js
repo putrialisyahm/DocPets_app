@@ -46,7 +46,7 @@ router.post('/login', [usersValidator.login, function(req, res, next) {
     if (!user) {
       res.status(401).json({
         status: 'Error',
-        message: info.message + " " + info.error,
+        message: info.message,
       });
       return;
     }

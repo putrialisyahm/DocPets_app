@@ -61,7 +61,7 @@ passport.use(
             email: email,          }
         });
         // If user is not found, it will make Unauthorized and make a message
-        if (!userLogin) {
+        if (userLogin.length === 0) {
           return done(null, false, {
             message: 'User not found!'
           })
@@ -92,8 +92,8 @@ passport.use(
       } catch (e) {
         // If error, it will create this message
         return done(null, false, {
-          message: "Can't login!",
-          error : e.message
+          message: "Can't login! " + e.message, 
+          
         })
       }
     }

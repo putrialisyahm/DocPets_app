@@ -15,9 +15,9 @@ module.exports = {
     check('password', 'password field must have 8 to 32 characters').isString().isLength({ min: 8, max: 32 }), // validator for password field
     check('passwordConfirmation', 'passwordConfirmation field must have the same value as the password field').exists().custom((value, { req }) => value === req.body.password), // validator for passwordConfirmation field
 
-    check('role', "role must be user, admin, or superadmin").custom(value => {
+    check('role', "role must be user, admin").custom(value => {
       let lowercase = value.toLowerCase();
-      if (lowercase === "user" || lowercase === "admin" || lowercase === "superadmin") {
+      if (lowercase === "user" || lowercase === "admin") {
         return true;
       }
       return false;

@@ -38,8 +38,7 @@ class UsersController {
     try {
       // Create a varible that will be saved in token
       const body = {
-        id: user.id,
-        email: user.email
+        _id: user[0].dataValues.id,
       };
 
       // Create a token for the user

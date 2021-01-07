@@ -19,8 +19,6 @@ test:
         - docker
     script:
         - npm install
-        - sequelize db:create
-        - sequelize db:migrate
         # - npm run test
     # Defines the names of branches and tags the job runs for
     only:

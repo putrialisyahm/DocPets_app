@@ -39,101 +39,101 @@ passport.use(
       } catch (e) {
         // If error, it will create this message
         return done(null, false, {
-          message: e.message + "User can't be created!"
+          message: e.message + " User can't be created!"
         });
       }
     },
   )
 );
 
-// // It will be used for login
-// passport.use(
-//   'login',
-//   new localStrategy({
-//     usernameField: 'email', // It will get from req.body.email
-//     passwordField: 'password' // It will get from req.body.password
-//   },
-//     async (email, password, done) => {
-//       try {
-//         // Find the user that have been inputed on req.body.email
-//         const userLogin = await user.findOne({
-//           where: {
-//             email: email
-//           }
-//         });
+// It will be used for login
+passport.use(
+  'login',
+  new localStrategy({
+    usernameField: 'email', // It will get from req.body.email
+    passwordField: 'password' // It will get from req.body.password
+  },
+    async (email, password, done) => {
+      try {
+        // Find the user that have been inputed on req.body.email
+        const userLogin = await User.findAll({
+          where: {
+            email: email,
+          }
+        });
+        // If user is not found, it will make Unauthorized and make a message
+        if (userLogin.length === 0) {
+          return done(null, false, {
+            message: 'User not found!'
+          })
+        };
 
-//         // If user is not found, it will make Unauthorized and make a message
-//         if (!userLogin) {
-//           return done(null, false, {
-//             message: 'User not found!'
-//           })
-//         };
+        // If user is found, it will validate the password among the user's input and database
+        const validate = await bcrypt.compare(password, userLogin[0].dataValues.password);
 
-//         // If user is found, it will validate the password among the user's input and database
-//         const validate = await bcrypt.compare(password, userLogin.password);
+        // If password wrong, it will make Unauthorized and make a message
+        if (!validate) {
+          return done(null, false, {
+            message: 'Wrong password!'
+          })
+        };
 
-//         // If password wrong, it will make Unauthorized and make a message
-//         if (!validate) {
-//           return done(null, false, {
-//             message: 'Wrong password!'
-//           })
-//         };
+        // If success, it will be find this user and only get id & email
+        const userLoginVisible = await User.findAll({
+          where: {
+            email: email
+          },
+          attributes: ['id', 'nama', 'email', 'foto', role]
+        });
 
-//         // If success, it will be find this user and only get id & email
-//         let userLoginVisible = await user.findOne({
-//           where: {
-//             email: email
-//           },
-//           attributes: ['id', 'email']
-//         });
+        // If success, it will return userLoginVisible variable that can be used in the next step
+        return done(null, userLoginVisible, {
+          message: 'Login success!'
+        });
+      } catch (e) {
+        // If error, it will create this message
+        return done(null, false, {
+          message: "Can't login! " + e.message,
 
-//         // If success, it will return userLoginVisible variable that can be used in the next step
-//         return done(null, userLoginVisible, {
-//           message: 'Login success!'
-//         });
-//       } catch (e) {
-//         // If error, it will create this message
-//         return done(null, false, {
-//           message: "Can't login!"
-//         })
-//       }
-//     }
-//   )
-// );
+        })
+      }
+    }
+  )
+);
 
-// passport.use(
-//   'jwt',
-//   new JWTstrategy({
-//     secretOrKey: 'secret_password', // It must be same with secret key when created token
-//     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
-//   },
-//     async (token, done) => {
-//       try {
-//         // Find the user depends on token that have been extracted
-//         const userLogin = await user.findOne({
-//           where: {
-//             email: token.user.email
-//           },
-//           attributes: ['id', 'email', 'role']
-//         });
+passport.use(
+  'jwt',
+  new JWTstrategy({
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+  },
+    async (token, done) => {
+      try {
+        // Find the user depends on token that have been extracted
+        const userLogin = await user.findOne({
+          where: {
+            email: token.user.email
+          },
+          attributes: ['id', 'email', 'role']
+        });
 
-//         // If user is not found, it will make Unauthorized and make a message
-//         if (!userLogin) {
-//           return done(null, false, {
-//             message: 'User not found!'
-//           })
-//         };
+        // If user is not found, it will make Unauthorized and make a message
+        if (!userLogin) {
+          return done(null, false, {
+            message: 'User not found!'
+          })
+        };
 
-//         // If success, it will return userLogin variable that can be used in the next step
-//         return done(null, userLogin, {
-//           message: "Authorized!"
-//         });
-//       } catch (e) {
-//         // If error, it will create this message
-//         return done(null, false, {
-//           message: "Unauthorized!"
-//         });
-//       }
-//     }
-//   )
-// );
+        // If success, it will return userLogin variable that can be used in the next step
+        return done(null, userLogin, {
+          message: "Authorized!"
+        });
+      } catch (e) {
+        // If error, it will create this message
+        return done(null, false, {
+          message: "Unauthorized!"
+        });
+      }
+    }
+  )
+);

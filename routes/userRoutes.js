@@ -31,54 +31,54 @@ router.post('/signup', [usersValidator.signup, function (req, res, next) {
 },
 ]);
 
-// // if user go to localhost:3000/login
-// router.post('/login', [usersValidator.login, function(req, res, next) {
-//   // will be go to login in auth
-//   passport.authenticate('login', {
-//     session: false
-//   }, async function(err, user, info) {
-//     // If error not null
-//     if (err) {
-//       return next(err);
-//     }
+// if user go to localhost:3000/login
+router.post('/login', [usersValidator.login, function(req, res, next) {
+  // will be go to login in auth
+  passport.authenticate('login', {
+    session: false
+  }, function(err, user, info) {
+    // If error not null
+    if (err) {
+      return next(err);
+    }
 
-//     // If user is not exist
-//     if (!user) {
-//       res.status(401).json({
-//         status: 'Error',
-//         message: info.message
-//       });
-//       return;
-//     }
+    // If user is not exist
+    if (!user) {
+      res.status(401).json({
+        status: 'Error',
+        message: info.message,
+      });
+      return;
+    }
 
-//     // If not error, it will go to login function in UsersController
-//     UsersController.login(user, req, res);
-//   })(req, res, next);
-// }]);
+    // If not error, it will go to login function in UsersController
+    usersController.login(user, req, res, next);
+  })(req, res, next);
+}]);
 
-// // Request authorization
-// router.get('/authorization', function(req, res, next) {
-//   // will be go to login in auth
-//   passport.authenticate('jwt', {
-//     session: false
-//   }, async function(err, user, info) {
-//     // If error not null
-//     if (err) {
-//       return next(err);
-//     }
+// Request authorization
+router.get('/authorization', function(req, res, next) {
+  // will be go to login in auth
+  passport.authenticate('jwt', {
+    session: false
+  }, async function(err, user, info) {
+    // If error not null
+    if (err) {
+      return next(err);
+    }
 
-//     // If user is not exist
-//     if (!user) {
-//       res.status(401).json({
-//         status: 'Error!',
-//         message: info.message
-//       });
-//       return;
-//     }
+    // If user is not exist
+    if (!user) {
+      res.status(401).json({
+        status: 'Error!',
+        message: info.message
+      });
+      return;
+    }
 
-//     // If not error, it will go to login function in UsersController
-//     UsersController.authorization(user, req, res);
-//   })(req, res, next);
-// })
+    // If not error, it will go to login function in UsersController
+    UsersController.authorization(user, req, res);
+  })(req, res, next);
+})
 
 module.exports = router; // Export router

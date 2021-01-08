@@ -29,7 +29,7 @@ passport.use(
           where: {
             id: createdUser.id
           },
-          attributes: ['id', 'nama', 'email', 'foto']
+          attributes: ['id', 'nama', 'email', 'foto', 'role']
 
         });
         // If success, it will return newUser variable that can be used in the next step

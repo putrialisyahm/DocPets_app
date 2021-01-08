@@ -17,7 +17,7 @@ module.exports = {
 
     check('role', "role must be user, admin, or superadmin").custom(value => {
       let lowercase = value.toLowerCase();
-      if (lowercase === "user" || lowercase === "admin" || lowercase === "superadmin") {
+      if (lowercase === "user" || lowercase === "klinik" || lowercase === "admin") {
         return true;
       }
       return false;

@@ -46,7 +46,7 @@ router.post('/login', [usersValidator.login, function(req, res, next) {
     if (!user) {
       res.status(401).json({
         status: 'Error',
-        message: info.message,
+        message: info.message + " " + info.error,
       });
       return;
     }
@@ -77,8 +77,36 @@ router.get('/authorization', function(req, res, next) {
     }
 
     // If not error, it will go to login function in UsersController
-    UsersController.authorization(user, req, res);
+    usersController.authorization(user, req, res);
   })(req, res, next);
 })
+
+router.put("/updateProfile/", [usersValidator.updateProfile,
+	function (req, res, next) {
+		passport.authenticate(
+			"checkLogin",
+			{
+				session: false,
+			},
+			function (err, user, info) {
+				if (err) {
+					return next(err);
+				}
+				if (!user) {
+					res.status(401).json({
+						status: "404",
+						message: info.message,
+					});
+					return;
+				}
+
+				usersController.updateProfile(user, req, res, next);
+			}
+		)(req, res, next);
+	},
+]);
+
+
+
 
 module.exports = router; // Export router

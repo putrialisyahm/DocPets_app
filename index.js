@@ -15,6 +15,7 @@ app.use(express.static('public'));
 
 app.use('/user', userRoutes); // If access localhost:3000, it will be go to userRoutes
 
+
 // Server running on port 3000
 app.listen(3000, () => {
   console.log('User running on port 3000!');

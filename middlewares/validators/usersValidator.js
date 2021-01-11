@@ -52,5 +52,44 @@ module.exports = {
       // If no errors, it will go to next step
       next();
     }
+  ],
+  updateProfile: [
+    check("nama", "nama must be string and lengt must be between 3-255").custom(value => {
+      if(value === undefined)
+        return true;
+      else if (value.length < 3 || value.length > 255) {
+        return false;
+      }
+      return true;
+    }),
+    check('gender', 'gender must be female/male').custom(value => {
+      value = value.trim().toLowerCase();
+      if (value === undefined)
+        return true;
+      else if (value !== "male" && value !== "female") {
+        return false;
+      }
+      return true;
+    }),
+    // check('email', 'email field must be email address').normalizeEmail().isEmail(), // validator for email field
+    check("telepon", "telepon field myst be an phone number").custom(value => {
+      if(value === undefined)
+        return true;
+      else if ( !value.isMobilePhone() ) {
+        return false;
+      }
+      return true;
+    }),
+    (req, res, next) => {
+      const errors = validationResult(req); // Collect errors from check function
+      // If errors is not null, it will be return errors response
+      if (!errors.isEmpty()) {
+        return res.status(422).json({
+          errors: errors.mapped()
+        });
+      }
+      // If no errors, it will go to next step
+      next();
+    }
   ]
 };

@@ -1,4 +1,4 @@
-const { user } = require('../models') // Import user model
+const { User } = require('../models') // Import user model
 const passport = require('passport'); // Import passport
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const { sendError, sendResponse } = require("./errorHandler");
@@ -106,11 +106,9 @@ class UsersController {
 
     }
   }
+
   async getDokterProfile(user, req, res, next) {
     try {
-
-      //TODO:
-      //     tambahkan jumlah peliharaan, dan banyaknya appointment selesai
 
       const userInfo = {
         email: user[0].dataValues.email,
@@ -135,6 +133,56 @@ class UsersController {
 
     }
   }
+
+
+  async updateUserProfile(token, req, res, next) {
+    try {
+
+      let data = {
+        nama: req.body.nama,
+        gender: req.body.gender,
+        telepon: req.body.telepon,
+        foto: "default.png"
+      }
+
+      Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
+      // console.log(token[0].dataValues.id);
+      const updateProfile = await User.update(
+        data,
+        {
+          where: { id: token[0].dataValues.id },
+        })
+      sendResponse("Profile Updated Succesfully", 200, res);
+    } catch (error) {
+      console.log(error);
+      sendError(error.message, 500, next)
+    }
+  }
+
+  async updateDokterProfile(token, req, res, next) {
+    try {
+
+      let data = {
+        nama: req.body.nama,
+        gender: req.body.gender,
+        telepon: req.body.telepon,
+        pengalaman: req.body.experience,
+        status: req.body.status,
+        waktuKerja: req.body.waktuKerja,
+      }
+
+      Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
+      const updateProfile = await User.update(
+        data,
+        {
+          where: { id: token[0].dataValues.id },
+        })
+      sendResponse("Profile Updated Succesfully", 200, res);
+    } catch (error) {
+      sendError(error.message, 500, next)
+    }
+  }
+
   // This function is to check, Is the user has Authorized or Unauthorized
   async authorization(user, req, res) {
     try {

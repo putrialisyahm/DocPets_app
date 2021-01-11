@@ -27,6 +27,7 @@ module.exports = {
       },
       foto: {
         type: Sequelize.STRING,
+        allowNull: true,
         default: "default.png"
       },
       role: {

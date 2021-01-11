@@ -92,6 +92,41 @@ router.get('/getProfile', function (req, res, next) {
   })(req, res, next);
 })
 
+router.put("/updateProfile/", [usersValidator.updateProfile,
+function (req, res, next) {
+  passport.authenticate(
+    "checkLogin",
+    {
+      session: false,
+    },
+    function (err, user, info) {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        res.status(401).json({
+          status: "404",
+          message: info.message,
+        });
+        return;
+      }
+      switch (user[0].dataValues.role) {
+        case "user":
+          usersController.updateUserProfile(user, req, res, next);
+          break;
+        case "klinik":
+          usersController.updateUserProfile(user, req, res, next);
+          break;
+        case "dokter":
+          usersController.updateDokterProfile(user, req, res, next);
+          break;
+      }
+
+    }
+  )(req, res, next);
+},
+]);
+
 // Request authorization
 router.get('/authorization', function (req, res, next) {
   // will be go to login in auth

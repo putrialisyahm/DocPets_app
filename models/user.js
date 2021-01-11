@@ -39,10 +39,11 @@ module.exports = (sequelize, DataTypes) => {
     foto: {
       type: DataTypes.STRING,
       defaultValue: "default.png",
-      get() {
-        const rawValue = this.getDataValue(foto);
-        return "/img/" + rawValue;
-      }
+      // get() {
+      //   const rawValue = this.getDataValue(foto);
+      //   return "/img/" + rawValue;
+      // },
+      require: false,
     },
     role: {
       type: DataTypes.STRING,

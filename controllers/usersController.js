@@ -7,30 +7,39 @@ class UsersController {
 
   async signup(newUser, req, res, next) {
     // get the req.user from passport authentication
+    try {
+      const body = {
+        _id: newUser[0].dataValues.id,
+      };
 
-    const body = {
-      _id: newUser[0].dataValues.id,
-    };
+      // create jwt token from body variable
+      const token = jwt.sign(
+        {
+          newUser: body,
+        },
+        "secret_password"
+      );
+      const userInfo = {
+        email: newUser[0].dataValues.email,
+        foto: "/img/" + newUser[0].dataValues.foto,
+        nama: newUser[0].dataValues.nama,
+        role: newUser[0].dataValues.role,
 
-    // create jwt token from body variable
-    const token = jwt.sign(
-      {
-        newUser: body,
-      },
-      "secret_password"
-    );
-    const userInfo = {
-      email: newUser[0].dataValues.email,
-      foto: "/img/" + newUser[0].dataValues.foto,
-      nama: newUser[0].dataValues.nama,
+      }
+      // success to create token
+      res.status(200).json({
+        user: userInfo,
+        message: "Signup success!",
+        token: token,
+      });
 
+    } catch (error) {
+      const message = {
+        message: "Something went wrong when signing in user",
+        error: error.message
+      }
+      sendError(message, 501, next)
     }
-    // success to create token
-    res.status(200).json({
-      user: userInfo,
-      message: "Signup success!",
-      token: token,
-    });
   }
 
   // If user pass the signup or login authorization, it will go to this function to create and get token
@@ -46,6 +55,12 @@ class UsersController {
         user: body
       }, 'secret_password');
 
+      const userInfo = {
+        email: user[0].dataValues.email,
+        foto: "/img/" + user[0].dataValues.foto,
+        nama: user[0].dataValues.nama,
+        role: newUser[0].dataValues.role,
+      }
       // If success, it will return the message and the token
       return res.status(200).json({
         message: 'Login success!',
@@ -53,10 +68,12 @@ class UsersController {
       });
     } catch (e) {
       // If error, it will return the message of error
-      return res.status(401).json({
-        status: "Error!",
-        message: e
-      })
+      const message = {
+        message: "Something went wrong when login in user",
+        error: error.message
+      }
+      sendError(message, 501, next)
+
     }
   }
 

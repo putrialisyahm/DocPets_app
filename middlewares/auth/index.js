@@ -29,7 +29,7 @@ passport.use(
           where: {
             id: createdUser.id
           },
-          attributes: ['id', 'nama', 'email', 'foto']
+          attributes: ['id', 'nama', 'email', 'foto', 'role']
 
         });
         // If success, it will return newUser variable that can be used in the next step
@@ -58,7 +58,8 @@ passport.use(
         // Find the user that have been inputed on req.body.email
         const userLogin = await User.findAll({
           where: {
-            email: email,          }
+            email: email,
+          }
         });
         // If user is not found, it will make Unauthorized and make a message
         if (userLogin.length === 0) {
@@ -66,7 +67,7 @@ passport.use(
             message: 'User not found!'
           })
         };
-        
+
         // If user is found, it will validate the password among the user's input and database
         const validate = await bcrypt.compare(password, userLogin[0].dataValues.password);
 
@@ -82,9 +83,9 @@ passport.use(
           where: {
             email: email
           },
-          attributes: ['id', 'nama', 'email', 'foto']
+          attributes: ['id', 'nama', 'email', 'foto', role]
         });
-        
+
         // If success, it will return userLoginVisible variable that can be used in the next step
         return done(null, userLoginVisible, {
           message: 'Login success!'
@@ -92,8 +93,8 @@ passport.use(
       } catch (e) {
         // If error, it will create this message
         return done(null, false, {
-          message: "Can't login! " + e.message, 
-          
+          message: "Can't login! " + e.message,
+
         })
       }
     }

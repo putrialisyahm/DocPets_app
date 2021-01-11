@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(models.Peliharaan, {as: 'peliharaan'})
     }
   };
   User.init({
@@ -26,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       require: true,
-      set(value) {
+      set(value) { 
         // Storing passwords in plaintext in the database is terrible.
         // Hashing the value with an appropriate cryptographic hash function is better.
         this.setDataValue('password', bcrypt.hashSync(value, 10));

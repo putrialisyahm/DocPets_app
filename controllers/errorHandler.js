@@ -7,7 +7,7 @@ const sendError = async function (message, errCode, next) {
 const sendResponse = async function (message, status, res) {
     res.status(status).json({
         message: message,
-    })
+    })     
 }
 
 module.exports = { sendResponse, sendError }; // Exports all models

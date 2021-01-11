@@ -21,7 +21,8 @@ passport.use(
           email: email,
           password: password,
           telepon: req.body.telepon,
-          role: req.body.role,
+          role: req.body.role.toLowerCase().trim(),
+          gender: req.body.gender.toLowerCase().trim(),
         });
 
         // Find new user that have been created in advance
@@ -29,7 +30,7 @@ passport.use(
           where: {
             id: createdUser.id
           },
-          attributes: ['id', 'nama', 'email', 'foto', 'role']
+          attributes: ['id', 'nama', 'email', 'foto', 'role', "gender"]
 
         });
         // If success, it will return newUser variable that can be used in the next step
@@ -83,7 +84,7 @@ passport.use(
           where: {
             email: email
           },
-          attributes: ['id', 'nama', 'email', 'foto', role]
+          attributes: ['id', 'nama', 'email', 'foto', "role"]
         });
 
         // If success, it will return userLoginVisible variable that can be used in the next step
@@ -96,6 +97,44 @@ passport.use(
           message: "Can't login! " + e.message,
 
         })
+      }
+    }
+  )
+);
+
+passport.use(
+  'checkLogin',
+  new JWTstrategy({
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+  },
+    async (token, done) => {
+      try {
+        // Find the user depends on token that have been extracted
+
+        const userLogin = await User.findAll({
+          where: {
+            id: token.user._id
+          },
+
+        });
+        // console.log(userLogin);
+        // If user is not found, it will make Unauthorized and make a message
+        if (userLogin.length === 0) {
+          return done(null, false, {
+            message: 'User not found!'
+          })
+        };
+
+        // If success, it will return userLogin variable that can be used in the next step
+        return done(null, userLogin, {
+          message: "Authorized!"
+        });
+      } catch (e) {
+        // If error, it will create this message
+        return done(null, false, {
+          message: "Unauthorized! " + e.message,
+        });
       }
     }
   )

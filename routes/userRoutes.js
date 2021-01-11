@@ -32,11 +32,11 @@ router.post('/signup', [usersValidator.signup, function (req, res, next) {
 ]);
 
 // if user go to localhost:3000/login
-router.post('/login', [usersValidator.login, function(req, res, next) {
+router.post('/login', [usersValidator.login, function (req, res, next) {
   // will be go to login in auth
   passport.authenticate('login', {
     session: false
-  }, function(err, user, info) {
+  }, function (err, user, info) {
     // If error not null
     if (err) {
       return next(err);
@@ -46,7 +46,7 @@ router.post('/login', [usersValidator.login, function(req, res, next) {
     if (!user) {
       res.status(401).json({
         status: 'Error',
-        message: info.message + " " + info.error,
+        message: info.message,
       });
       return;
     }
@@ -56,12 +56,11 @@ router.post('/login', [usersValidator.login, function(req, res, next) {
   })(req, res, next);
 }]);
 
-// Request authorization
-router.get('/authorization', function(req, res, next) {
+router.get('/getProfile', function (req, res, next) {
   // will be go to login in auth
-  passport.authenticate('jwt', {
+  passport.authenticate('checkLogin', {
     session: false
-  }, async function(err, user, info) {
+  }, async function (err, user, info) {
     // If error not null
     if (err) {
       return next(err);
@@ -77,36 +76,45 @@ router.get('/authorization', function(req, res, next) {
     }
 
     // If not error, it will go to login function in UsersController
-    usersController.authorization(user, req, res);
+
+    switch (user[0].dataValues.role) {
+      case "user":
+        usersController.getUserProfile(user, req, res, next);
+        break;
+      case "klinik":
+        usersController.getKlinikProfile(user, req, res, next);
+        break;
+      case "dokter":
+        usersController.getDokterProfile(user, req, res, next);
+        break;
+    }
+
   })(req, res, next);
 })
 
-router.put("/updateProfile/", [usersValidator.updateProfile,
-	function (req, res, next) {
-		passport.authenticate(
-			"checkLogin",
-			{
-				session: false,
-			},
-			function (err, user, info) {
-				if (err) {
-					return next(err);
-				}
-				if (!user) {
-					res.status(401).json({
-						status: "404",
-						message: info.message,
-					});
-					return;
-				}
+// Request authorization
+router.get('/authorization', function (req, res, next) {
+  // will be go to login in auth
+  passport.authenticate('jwt', {
+    session: false
+  }, async function (err, user, info) {
+    // If error not null
+    if (err) {
+      return next(err);
+    }
 
-				usersController.updateProfile(user, req, res, next);
-			}
-		)(req, res, next);
-	},
-]);
+    // If user is not exist
+    if (!user) {
+      res.status(401).json({
+        status: 'Error!',
+        message: info.message
+      });
+      return;
+    }
 
-
-
+    // If not error, it will go to login function in UsersController
+    UsersController.authorization(user, req, res);
+  })(req, res, next);
+})
 
 module.exports = router; // Export router

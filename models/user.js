@@ -47,7 +47,23 @@ module.exports = (sequelize, DataTypes) => {
     role: {
       type: DataTypes.STRING,
       require: true,
-    }
+    },
+    gender: {
+      type: DataTypes.STRING,
+      require: false,
+    },
+    waktuKerja: {
+      type: DataTypes.STRING,
+      require: false,
+    },
+    pengalaman: {
+      type: DataTypes.STRING,
+      require: false,
+    },
+    status: {
+      type: DataTypes.STRING,
+      require: false,
+    },
   }, {
     sequelize,
     paranoid: true, // Activate softdelete

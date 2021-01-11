@@ -1,7 +1,7 @@
 const { user } = require('../models') // Import user model
 const passport = require('passport'); // Import passport
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
-
+const { sendError, sendResponse } = require("./errorHandler");
 // UsersController class declaration
 class UsersController {
 
@@ -15,7 +15,7 @@ class UsersController {
       // create jwt token from body variable
       const token = jwt.sign(
         {
-          newUser: body,
+          user: body,
         },
         "secret_password"
       );
@@ -40,10 +40,11 @@ class UsersController {
       }
       sendError(message, 501, next)
     }
+
   }
 
   // If user pass the signup or login authorization, it will go to this function to create and get token
-  async login(user, req, res, next) {
+  async login(user, req, res) {
     try {
       // Create a varible that will be saved in token
       const body = {
@@ -59,14 +60,15 @@ class UsersController {
         email: user[0].dataValues.email,
         foto: "/img/" + user[0].dataValues.foto,
         nama: user[0].dataValues.nama,
-        role: newUser[0].dataValues.role,
+        role: user[0].dataValues.role,
       }
       // If success, it will return the message and the token
       return res.status(200).json({
+        user: userInfo,
         message: 'Login success!',
         token: token
       });
-    } catch (e) {
+    } catch (error) {
       // If error, it will return the message of error
       const message = {
         message: "Something went wrong when login in user",
@@ -77,6 +79,62 @@ class UsersController {
     }
   }
 
+  async getUserProfile(user, req, res, next) {
+    try {
+
+      //TODO:
+      //     tambahkan jumlah peliharaan, dan banyaknya appointment selesai
+
+      const userInfo = {
+        email: user[0].dataValues.email,
+        foto: "/img/" + user[0].dataValues.foto,
+        nama: user[0].dataValues.nama,
+        role: user[0].dataValues.role,
+        gender: user[0].dataValues.gender,
+        telepon: user[0].dataValues.telepon,
+
+      }
+      // If success, it will return user's Profile
+      sendResponse(userInfo, 200, res);
+    } catch (error) {
+      // If error, it will return the message of error
+      const message = {
+        message: "Something went wrong when accessing user's profile",
+        error: error.message
+      }
+      sendError(message, 501, next)
+
+    }
+  }
+  async getDokterProfile(user, req, res, next) {
+    try {
+
+      //TODO:
+      //     tambahkan jumlah peliharaan, dan banyaknya appointment selesai
+
+      const userInfo = {
+        email: user[0].dataValues.email,
+        foto: "/img/" + user[0].dataValues.foto,
+        nama: user[0].dataValues.nama,
+        role: user[0].dataValues.role,
+        gender: user[0].dataValues.gender,
+        telepon: user[0].dataValues.telepon,
+        status: user[0].dataValues.status,
+        pengalaman: user[0].dataValues.pengalaman,
+        waktuKerja: user[0].dataValues.waktuKerja,
+      }
+      // If success, it will return user's Profile
+      sendResponse(userInfo, 200, res);
+    } catch (error) {
+      // If error, it will return the message of error
+      const message = {
+        message: "Something went wrong when Accessing Doctor's profile",
+        error: error.message
+      }
+      sendError(message, 501, next)
+
+    }
+  }
   // This function is to check, Is the user has Authorized or Unauthorized
   async authorization(user, req, res) {
     try {
@@ -95,30 +153,6 @@ class UsersController {
     }
   }
 
-  async updateProfile(token, req, res, next) {
-		try {
-      
-      let data = {
-          nama: req.body.nama,
-          gender: req.body.gender,
-          telepon: req.body.telepon
-      }
-
-      Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
-      const updateProfile = await user.findOneAndUpdate(
-          { id: req.params.id },
-          data
-
-      )
-      if (updateProfile)
-          sendResponse("Profile Updated Succesfully", 200, res);
-      else
-          sendError("failed to update profile", 500, next);
-  } catch (error) {
-      sendError(error.message, 500, next)
-  }
-	}
 }
-  
 
 module.exports = new UsersController; // Export UserController

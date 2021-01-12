@@ -21,7 +21,8 @@ passport.use(
           email: email,
           password: password,
           telepon: req.body.telepon,
-          role: req.body.role,
+          role: req.body.role.toLowerCase().trim(),
+          gender: req.body.gender.toLowerCase().trim(),
         });
 
         // Find new user that have been created in advance
@@ -29,7 +30,7 @@ passport.use(
           where: {
             id: createdUser.id
           },
-          attributes: ['id', 'nama', 'email', 'foto']
+          attributes: ['id', 'nama', 'email', 'foto', 'role', "gender"]
 
         });
         // If success, it will return newUser variable that can be used in the next step
@@ -58,7 +59,8 @@ passport.use(
         // Find the user that have been inputed on req.body.email
         const userLogin = await User.findAll({
           where: {
-            email: email,          }
+            email: email,
+          }
         });
         // If user is not found, it will make Unauthorized and make a message
         if (userLogin.length === 0) {
@@ -66,7 +68,7 @@ passport.use(
             message: 'User not found!'
           })
         };
-        
+
         // If user is found, it will validate the password among the user's input and database
         const validate = await bcrypt.compare(password, userLogin[0].dataValues.password);
 
@@ -82,9 +84,9 @@ passport.use(
           where: {
             email: email
           },
-          attributes: ['id', 'nama', 'email', 'foto']
+          attributes: ['id', 'nama', 'email', 'foto', "role"]
         });
-        
+
         // If success, it will return userLoginVisible variable that can be used in the next step
         return done(null, userLoginVisible, {
           message: 'Login success!'
@@ -92,9 +94,47 @@ passport.use(
       } catch (e) {
         // If error, it will create this message
         return done(null, false, {
-          message: "Can't login! " + e.message, 
-          
+          message: "Can't login! " + e.message,
+
         })
+      }
+    }
+  )
+);
+
+passport.use(
+  'checkLogin',
+  new JWTstrategy({
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+  },
+    async (token, done) => {
+      try {
+        // Find the user depends on token that have been extracted
+
+        const userLogin = await User.findAll({
+          where: {
+            id: token.user._id
+          },
+
+        });
+        // console.log(userLogin);
+        // If user is not found, it will make Unauthorized and make a message
+        if (userLogin.length === 0) {
+          return done(null, false, {
+            message: 'User not found!'
+          })
+        };
+
+        // If success, it will return userLogin variable that can be used in the next step
+        return done(null, userLogin, {
+          message: "Authorized!"
+        });
+      } catch (e) {
+        // If error, it will create this message
+        return done(null, false, {
+          message: "Unauthorized! " + e.message,
+        });
       }
     }
   )

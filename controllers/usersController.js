@@ -1,4 +1,4 @@
-const { user } = require('../models') // Import user model
+const { User } = require('../models') // Import user model
 const passport = require('passport'); // Import passport
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const { sendError, sendResponse } = require("./errorHandler");
@@ -7,39 +7,40 @@ class UsersController {
 
   async signup(newUser, req, res, next) {
     // get the req.user from passport authentication
-try {
-  const body = {
-    _id: newUser[0].dataValues.id,
-  };
+    try {
+      const body = {
+        _id: newUser[0].dataValues.id,
+      };
 
-  // create jwt token from body variable
-  const token = jwt.sign(
-    {
-      newUser: body,
-    },
-    "secret_password"
-  );
-  const userInfo = {
-    email: newUser[0].dataValues.email,
-    foto: "/img/" + newUser[0].dataValues.foto,
-    nama: newUser[0].dataValues.nama,
+      // create jwt token from body variable
+      const token = jwt.sign(
+        {
+          user: body,
+        },
+        "secret_password"
+      );
+      const userInfo = {
+        email: newUser[0].dataValues.email,
+        foto: "/img/" + newUser[0].dataValues.foto,
+        nama: newUser[0].dataValues.nama,
+        role: newUser[0].dataValues.role,
 
-  }
-  // success to create token
-  res.status(200).json({
-    user: userInfo,
-    message: "Signup success!",
-    token: token,
-  });
+      }
 
-} catch (error) {
-  const message = {
-    message:"Something went wrong when signing in user",
-    error: error.message
-  }
-  sendError (message, 501, next)
-}
-    
+      const result = {
+        user: userInfo,
+        token: token,
+      }
+      // success to create token
+      sendResponse("Signup success!", 200, result, res);
+    } catch (error) {
+      const message = {
+        message: "Something went wrong when signing in user",
+        error: error.message
+      }
+      sendError(message, 501, next)
+    }
+
   }
 
   // If user pass the signup or login authorization, it will go to this function to create and get token
@@ -54,47 +55,136 @@ try {
       const token = jwt.sign({
         user: body
       }, 'secret_password');
-      
+
       const userInfo = {
         email: user[0].dataValues.email,
         foto: "/img/" + user[0].dataValues.foto,
         nama: user[0].dataValues.nama,
-  
+        role: user[0].dataValues.role,
       }
-      // If success, it will return the message and the token
-      return res.status(200).json({
+
+      const result = {
         user: userInfo,
-        message: 'Login success!',
-        token: token
-      });
+        token: token,
+      }
+      // success to create token
+      sendResponse("Login success!", 200, result, res);
+
+
     } catch (error) {
       // If error, it will return the message of error
       const message = {
-        message:"Something went wrong when login in user",
+        message: "Something went wrong when login in user",
         error: error.message
       }
-      sendError (message, 501, next)
-    
+      sendError(message, 501, next)
+
     }
   }
 
-  // This function is to check, Is the user has Authorized or Unauthorized
-  async authorization(user, req, res) {
+  async getUserProfile(user, req, res, next) {
     try {
-      // If success, it will be return the user information (id, email, and role)
-      return res.status(200).json({
-        status: "Success!",
-        message: "Authorized!",
-        user: user
-      })
-    } catch (e) {
+
+      //TODO:
+      //     tambahkan jumlah peliharaan, dan banyaknya appointment selesai
+
+      const userInfo = {
+        email: user[0].dataValues.email,
+        foto: "/img/" + user[0].dataValues.foto,
+        nama: user[0].dataValues.nama,
+        role: user[0].dataValues.role,
+        gender: user[0].dataValues.gender,
+        telepon: user[0].dataValues.telepon,
+
+      }
+      // If success, it will return user's Profile
+      sendResponse("Success Getting User Profile", 200, userInfo, res);
+    } catch (error) {
       // If error, it will return the message of error
-      return res.status(401).json({
-        status: "Error!",
-        message: "Unauthorized!",
-      })
+      const message = {
+        message: "Something went wrong when accessing user's profile",
+        error: error.message
+      }
+      sendError(message, 501, next)
+
     }
   }
+
+  async getDokterProfile(user, req, res, next) {
+    try {
+
+      const userInfo = {
+        email: user[0].dataValues.email,
+        foto: "/img/" + user[0].dataValues.foto,
+        nama: user[0].dataValues.nama,
+        role: user[0].dataValues.role,
+        gender: user[0].dataValues.gender,
+        telepon: user[0].dataValues.telepon,
+        status: user[0].dataValues.status,
+        pengalaman: user[0].dataValues.pengalaman,
+        waktuKerja: user[0].dataValues.waktuKerja,
+      }
+      // If success, it will return user's Profile
+      sendResponse("Success Getting Doctor's Profile", 200, userInfo, res);
+    } catch (error) {
+      // If error, it will return the message of error
+      const message = {
+        message: "Something went wrong when Accessing Doctor's profile",
+        error: error.message
+      }
+      sendError(message, 501, next)
+
+    }
+  }
+
+
+  async updateUserProfile(token, req, res, next) {
+    try {
+      let data = {
+        nama: req.body.nama,
+        gender: req.body.gender,
+        telepon: req.body.telepon,
+        foto: "default.png"
+      }
+
+      Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
+      // console.log(token[0].dataValues.id);
+      const updateProfile = await User.update(
+        data,
+        {
+          where: { id: token[0].dataValues.id },
+        })
+      sendResponse("Profile Updated Succesfully", 200, {}, res);
+    } catch (error) {
+      console.log(error);
+      sendError(error.message, 500, next)
+    }
+  }
+
+  async updateDokterProfile(token, req, res, next) {
+    try {
+
+      let data = {
+        nama: req.body.nama,
+        gender: req.body.gender,
+        telepon: req.body.telepon,
+        pengalaman: req.body.experience,
+        status: req.body.status,
+        waktuKerja: req.body.waktuKerja,
+      }
+
+      Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
+      const updateProfile = await User.update(
+        data,
+        {
+          where: { id: token[0].dataValues.id },
+        })
+      sendResponse("Profile Updated Succesfully", 200, {}, res);
+    } catch (error) {
+      sendError(error.message, 500, next)
+    }
+  }
+
 
 }
 

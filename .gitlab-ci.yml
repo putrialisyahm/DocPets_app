@@ -19,7 +19,9 @@ test:
         - docker
     script:
         - npm install
-        # - npm run test
+        - sequelize db:drop
+        - sequelize db:create
+        - sequelize db:migrate
     # Defines the names of branches and tags the job runs for
     only:
         - master
@@ -37,7 +39,7 @@ deploy:
         - cd $PROJECT_DIR
         - npm install
         # Restart NodeJS service
-        - forever stop index.js || true
+        - forever stopall || true
         - forever start index.js
     only:
         - master

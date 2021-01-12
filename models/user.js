@@ -39,15 +39,32 @@ module.exports = (sequelize, DataTypes) => {
     foto: {
       type: DataTypes.STRING,
       defaultValue: "default.png",
-      get() {
-        const rawValue = this.getDataValue(foto);
-        return "/img/" + rawValue;
-      }
+      // get() {
+      //   const rawValue = this.getDataValue(foto);
+      //   return "/img/" + rawValue;
+      // },
+      require: false,
     },
     role: {
       type: DataTypes.STRING,
       require: true,
-    }
+    },
+    gender: {
+      type: DataTypes.STRING,
+      require: false,
+    },
+    waktuKerja: {
+      type: DataTypes.STRING,
+      require: false,
+    },
+    pengalaman: {
+      type: DataTypes.STRING,
+      require: false,
+    },
+    status: {
+      type: DataTypes.STRING,
+      require: false,
+    },
   }, {
     sequelize,
     paranoid: true, // Activate softdelete

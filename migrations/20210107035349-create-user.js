@@ -27,11 +27,28 @@ module.exports = {
       },
       foto: {
         type: Sequelize.STRING,
+        allowNull: true,
         default: "default.png"
       },
       role: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      gender: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      waktuKerja: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      pengalaman: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      status: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,

@@ -39,7 +39,7 @@ deploy:
         - cd $PROJECT_DIR
         - npm install
         # Restart NodeJS service
-        - forever stop index.js || true
+        - forever stopall || true
         - forever start index.js
     only:
         - master

@@ -39,7 +39,7 @@ deploy:
         - sequelize db:drop
         - sequelize db:create
         - sequelize db:migrate
-        - forever stopall || true
+        - forever stopall
         - forever start index.js
     only:
         - master

@@ -57,7 +57,9 @@ module.exports = {
       // If errors is not null, it will be return errors response
       if (!errors.isEmpty()) {
         return res.status(422).json({
-          errors: errors.mapped()
+          errors: errors.mapped(),
+          success: false,
+          code: 422,
         });
       }
 
@@ -73,7 +75,9 @@ module.exports = {
       // If errors is not null, it will be return errors response
       if (!errors.isEmpty()) {
         return res.status(422).json({
-          errors: errors.mapped()
+          errors: errors.mapped(),
+          success: false,
+          code: 422,
         });
       }
       // If no errors, it will go to next step
@@ -130,7 +134,7 @@ module.exports = {
       if (value === undefined)
         return true;
       value = value.trim().toLowerCase();
-      if (!value.isNumeric()) {
+      if (isNaN(value)) {
         return false;
       }
       return true;
@@ -140,7 +144,9 @@ module.exports = {
       // If errors is not null, it will be return errors response
       if (!errors.isEmpty()) {
         return res.status(422).json({
-          errors: errors.mapped()
+          errors: errors.mapped(),
+          success: false,
+          code: 422,
         });
       }
       // If no errors, it will go to next step

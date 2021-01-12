@@ -19,8 +19,9 @@ router.post('/signup', [usersValidator.signup, function (req, res, next) {
       }
       if (!user) {
         res.status(401).json({
-          status: "Error",
           message: info.message,
+          success: false,
+          code: 401
         });
         return;
       }
@@ -45,8 +46,9 @@ router.post('/login', [usersValidator.login, function (req, res, next) {
     // If user is not exist
     if (!user) {
       res.status(401).json({
-        status: 'Error',
         message: info.message,
+        success: false,
+        code: 401
       });
       return;
     }
@@ -69,8 +71,9 @@ router.get('/getProfile', function (req, res, next) {
     // If user is not exist
     if (!user) {
       res.status(401).json({
-        status: 'Error!',
-        message: info.message
+        message: info.message,
+        success: false,
+        code: 401
       });
       return;
     }
@@ -79,10 +82,8 @@ router.get('/getProfile', function (req, res, next) {
 
     switch (user[0].dataValues.role) {
       case "user":
-        usersController.getUserProfile(user, req, res, next);
-        break;
       case "klinik":
-        usersController.getKlinikProfile(user, req, res, next);
+        usersController.getUserProfile(user, req, res, next);
         break;
       case "dokter":
         usersController.getDokterProfile(user, req, res, next);
@@ -105,8 +106,9 @@ function (req, res, next) {
       }
       if (!user) {
         res.status(401).json({
-          status: "404",
           message: info.message,
+          success: false,
+          code: 401
         });
         return;
       }
@@ -127,29 +129,24 @@ function (req, res, next) {
 },
 ]);
 
-// Request authorization
-router.get('/authorization', function (req, res, next) {
-  // will be go to login in auth
-  passport.authenticate('jwt', {
-    session: false
-  }, async function (err, user, info) {
-    // If error not null
-    if (err) {
-      return next(err);
-    }
 
-    // If user is not exist
-    if (!user) {
-      res.status(401).json({
-        status: 'Error!',
-        message: info.message
-      });
-      return;
-    }
+router.use((req, res, next) => {
+  const err = new Error("Page Not Found");
+  err.status = 404;
+  next(err);
+});
 
-    // If not error, it will go to login function in UsersController
-    UsersController.authorization(user, req, res);
-  })(req, res, next);
-})
+
+//ketika fungsi next dipanggil pakek fungsi ini,
+router.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.send({
+    error: {
+      message: err.message,
+      success: false,
+      code: err.status || 500,
+    },
+  });
+});
 
 module.exports = router; // Export router

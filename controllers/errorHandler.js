@@ -4,10 +4,15 @@ const sendError = async function (message, errCode, next) {
     next(err);
 };
 
-const sendResponse = async function (message, status, res) {
-    res.status(status).json({
+const sendResponse = async function (message, code, result, res) {
+    const response = {
         message: message,
-    })
+        success: true,
+        code: code,
+        result: result,
+    }
+
+    res.status(code).json(response);
 }
 
 module.exports = { sendResponse, sendError }; // Exports all models

@@ -26,13 +26,13 @@ class UsersController {
         role: newUser[0].dataValues.role,
 
       }
-      // success to create token
-      res.status(200).json({
-        user: userInfo,
-        message: "Signup success!",
-        token: token,
-      });
 
+      const result = {
+        user: userInfo,
+        token: token,
+      }
+      // success to create token
+      sendResponse("Signup success!", 200, result, res);
     } catch (error) {
       const message = {
         message: "Something went wrong when signing in user",
@@ -62,12 +62,15 @@ class UsersController {
         nama: user[0].dataValues.nama,
         role: user[0].dataValues.role,
       }
-      // If success, it will return the message and the token
-      return res.status(200).json({
+
+      const result = {
         user: userInfo,
-        message: 'Login success!',
-        token: token
-      });
+        token: token,
+      }
+      // success to create token
+      sendResponse("Login success!", 200, result, res);
+
+
     } catch (error) {
       // If error, it will return the message of error
       const message = {
@@ -95,7 +98,7 @@ class UsersController {
 
       }
       // If success, it will return user's Profile
-      sendResponse(userInfo, 200, res);
+      sendResponse("Success Getting User Profile", 200, userInfo, res);
     } catch (error) {
       // If error, it will return the message of error
       const message = {
@@ -122,7 +125,7 @@ class UsersController {
         waktuKerja: user[0].dataValues.waktuKerja,
       }
       // If success, it will return user's Profile
-      sendResponse(userInfo, 200, res);
+      sendResponse("Success Getting Doctor's Profile", 200, userInfo, res);
     } catch (error) {
       // If error, it will return the message of error
       const message = {
@@ -137,7 +140,6 @@ class UsersController {
 
   async updateUserProfile(token, req, res, next) {
     try {
-
       let data = {
         nama: req.body.nama,
         gender: req.body.gender,
@@ -152,7 +154,7 @@ class UsersController {
         {
           where: { id: token[0].dataValues.id },
         })
-      sendResponse("Profile Updated Succesfully", 200, res);
+      sendResponse("Profile Updated Succesfully", 200, {}, res);
     } catch (error) {
       console.log(error);
       sendError(error.message, 500, next)
@@ -177,29 +179,12 @@ class UsersController {
         {
           where: { id: token[0].dataValues.id },
         })
-      sendResponse("Profile Updated Succesfully", 200, res);
+      sendResponse("Profile Updated Succesfully", 200, {}, res);
     } catch (error) {
       sendError(error.message, 500, next)
     }
   }
 
-  // This function is to check, Is the user has Authorized or Unauthorized
-  async authorization(user, req, res) {
-    try {
-      // If success, it will be return the user information (id, email, and role)
-      return res.status(200).json({
-        status: "Success!",
-        message: "Authorized!",
-        user: user
-      })
-    } catch (e) {
-      // If error, it will return the message of error
-      return res.status(401).json({
-        status: "Error!",
-        message: "Unauthorized!",
-      })
-    }
-  }
 
 }
 

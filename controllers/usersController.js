@@ -138,6 +138,7 @@ class UsersController {
   }
 
 
+<<<<<<< HEAD
   async updateUserProfile(token, req, res, next) {
     try {
       let data = {
@@ -186,6 +187,73 @@ class UsersController {
   }
 
 
+=======
+	async insertPP(token, req, res
+    ) {
+  
+      user.findOneAndUpdate({ _id: token._id, },
+        {
+          $set: { profilePic: req.file === undefined ? "" : req.file.filename, },
+        }, { new: true }
+      ).then((result) => {
+        res.status(200).json({
+          message: "Uploaded Successfuly",
+          result: result.profilePic,
+        });
+      });
+  
+    }
+  
+    async changeName(token, req, res) {
+  
+      user.updateOne({ _id: token._id },
+        {
+          $set: { fullName: req.body.fullName },
+        }
+      ).then((result) => {
+        sendResponse("Name Changed Successfully", 200, res);
+      }).catch(err => {
+        sendError(err.message, 500, next);
+      });
+    }
+  
+    async changePass(token, req, res, next) {
+  
+  
+      // const options = { upsert: false, new: false, setDefaultsOnInsert: true };
+      user.findOne({ _id: token._id }
+      ).then(async (result) => {
+        console.log(result);
+        const validate = await bcrypt.compare(req.body.oldPassword, result.password);
+        if (validate) {
+  
+          user.updateOne({ _id: token._id }, { password: bcrypt.hashSync(req.body.newPassword, 10) })
+            .then((result) => {
+              sendResponse("Password Changed Successfully", 200, res);
+            }).catch(err => {
+              sendError(err.message, 500, next)
+            });
+  
+        } else {
+          sendError("You've entered the wrong password", 400, next);
+        }
+      }).catch(err => {
+        sendError(err.message, 500, next);
+      })
+  
+    }
+  
+    async getPP(req, res) {
+      user.findOne({ email: req.body.email }).then((result) => {
+        res.status(200).json({
+          message: "Uploaded Successfuly",
+          result: result.profilePic,
+        });
+      });
+    }
+
+    
+>>>>>>> e87b3a2b017660b5da5c708386ddec875b154997
 }
 
 module.exports = new UsersController; // Export UserController

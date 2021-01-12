@@ -19,6 +19,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('public'));
 
 app.use('/user', userRoutes); // If access localhost:3000, it will be go to userRoutes
+// app.use('/peliharaan', peliharaanRoutes);
 
 // Server running on port 3000
 app.listen(3000, () => {

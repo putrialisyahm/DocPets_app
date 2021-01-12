@@ -5,7 +5,7 @@ const fs = require("fs");
 const https = require("https");
 
 const app = express(); // Make API
-
+ 
 const key = fs.readFileSync("./ssl/privkey.pem", "utf-8");
 const cert = fs.readFileSync("./ssl/cert.pem", "utf-8");
 

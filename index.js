@@ -1,6 +1,7 @@
 const express = require('express'); // Import express
 const bodyParser = require('body-parser'); // Import body-parser
 const userRoutes = require('./routes/userRoutes'); // Import routes
+const klinikRoutes = require('./routes/klinikRoutes'); // Import routes
 const fs = require("fs");
 const https = require("https");
 
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('public'));
 
 app.use('/user', userRoutes); // If access localhost:3000, it will be go to userRoutes
+app.use('/klinik', klinikRoutes); // If access localhost:3000, it will be go to KlinikRoutes
 // app.use('/peliharaan', peliharaanRoutes);
 
 // Server running on port 3000

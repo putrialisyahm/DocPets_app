@@ -1,4 +1,4 @@
-sequelize model:generate --name Pemasok --attributes nama:string,email:string,password:string,telepon:integer,foto:string,role:string
+
 
 
 CREATE USER 'vet'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
@@ -7,6 +7,12 @@ GRANT ALL PRIVILEGES ON *.* TO 'vet'@'localhost' WITH GRANT OPTION;
 
 
 ssh -i VET.pem ubuntu@13.250.101.249
+sequelize model:generate --name Pemasok --attributes nama:string,email:string,password:string,telepon:integer,foto:string,role:string
+sequelize model:generate --name Memiliki --attributes klinikId:integer,dokterId:integer
+sequelize model:generate --name Klinik --attributes tentang:string,fasilitas:string,foto:string,dokter:integer
+
+
+sequelize seed:generate --name add-data-Klinik
 
 
 

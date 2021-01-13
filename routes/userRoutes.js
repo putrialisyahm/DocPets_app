@@ -129,6 +129,61 @@ function (req, res, next) {
 },
 ]);
 
+router.put("/addPet", [usersValidator.addPet,
+function (req, res, next) {
+  passport.authenticate(
+    "checkLogin",
+    {
+      session: false,
+    },
+    function (err, user, info) {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        res.status(401).json({
+          message: info.message,
+          success: false,
+          code: 401
+        });
+        return;
+      }
+
+      usersController.addPet(user, req, res, next);
+
+
+    }
+  )(req, res, next);
+},
+]);
+
+router.get("/getPet", [
+  function (req, res, next) {
+    passport.authenticate(
+      "checkLogin",
+      {
+        session: false,
+      },
+      function (err, user, info) {
+        if (err) {
+          return next(err);
+        }
+        if (!user) {
+          res.status(401).json({
+            message: info.message,
+            success: false,
+            code: 401
+          });
+          return;
+        }
+
+        usersController.getPet(user, req, res, next);
+
+
+      }
+    )(req, res, next);
+  },
+]);
 
 router.use((req, res, next) => {
   const err = new Error("Page Not Found");
@@ -140,6 +195,7 @@ router.use((req, res, next) => {
 //ketika fungsi next dipanggil pakek fungsi ini,
 router.use((err, req, res, next) => {
   res.status(err.status || 500);
+  console.log(err)
   res.send({
     error: {
       message: err.message,

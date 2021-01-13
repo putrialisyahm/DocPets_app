@@ -1,4 +1,4 @@
-const { User } = require('../models') // Import user model
+const { User, Peliharaan } = require('../models') // Import user model
 const passport = require('passport'); // Import passport
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const { sendError, sendResponse } = require("./errorHandler");
@@ -87,6 +87,10 @@ class UsersController {
 
       //TODO:
       //     tambahkan jumlah peliharaan, dan banyaknya appointment selesai
+      const result = await Peliharaan.findAll({
+        where: { userId: user[0].dataValues.id },
+        attributes: ['id', 'nama', 'jenis', 'gender', "userId"]
+      })
 
       const userInfo = {
         email: user[0].dataValues.email,
@@ -95,7 +99,7 @@ class UsersController {
         role: user[0].dataValues.role,
         gender: user[0].dataValues.gender,
         telepon: user[0].dataValues.telepon,
-
+        numPet: result.length,
       }
       // If success, it will return user's Profile
       sendResponse("Success Getting User Profile", 200, userInfo, res);
@@ -180,6 +184,38 @@ class UsersController {
           where: { id: token[0].dataValues.id },
         })
       sendResponse("Profile Updated Succesfully", 200, {}, res);
+    } catch (error) {
+      sendError(error.message, 500, next)
+    }
+  }
+
+  async getPet(token, req, res, next) {
+    try {
+      const result = await Peliharaan.findAll({
+        where: { userId: token[0].dataValues.id },
+        attributes: ['id', 'nama', 'jenis', 'gender', "userId"]
+      })
+      console.log(result);
+      sendResponse("Pets Retrieved Succesfully", 200, result, res);
+    } catch (error) {
+      sendError(error.message, 500, next)
+    }
+  }
+
+  async addPet(token, req, res, next) {
+    try {
+
+      let data = {
+        nama: req.body.nama,
+        gender: req.body.gender,
+        jenis: req.body.jenis,
+        userId: token[0].dataValues.id,
+      }
+
+
+      const result = await Peliharaan.create(data)
+      console.log(result);
+      sendResponse("Pets Added Succesfully", 200, {}, res);
     } catch (error) {
       sendError(error.message, 500, next)
     }

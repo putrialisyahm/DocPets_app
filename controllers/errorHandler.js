@@ -1,5 +1,5 @@
 const sendError = async function (message, errCode, next) {
-    let err = new Error(message);
+    let err = new Error(message.error);
     err.status = errCode;
     next(err);
 };

@@ -1,9 +1,10 @@
 const passport = require('passport'); // Import passport
 const localStrategy = require('passport-local').Strategy; // Import localStrategy from passport
-const { User } = require('../../models'); // Import user model
+const { User, Memiliki, Klinik } = require('../../models'); // Import user model
 const bcrypt = require('bcrypt'); // Import bcrypt
 const JWTstrategy = require('passport-jwt').Strategy; // Import JWTstrategy from passport
 const ExtractJWT = require('passport-jwt').ExtractJwt; // Import ExtractJWT from passport
+const Sequelize = require('sequelize');
 
 // It will be used for signup and create the user
 passport.use(
@@ -116,7 +117,6 @@ passport.use(
           where: {
             id: token.user._id
           },
-
         });
         // console.log(userLogin);
         // If user is not found, it will make Unauthorized and make a message
@@ -139,6 +139,92 @@ passport.use(
     }
   )
 );
+
+
+passport.use(
+  'checkKlinik',
+  new JWTstrategy({
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), // It will extract token from req.header('Authorization')
+    passReqToCallback: true,
+  },
+    async (req, token, done) => {
+      try {
+        // Find the user depends on token that have been extracted
+        const Op = Sequelize.Op
+
+        const userLogin = await User.findAll({
+          where: {
+            id: token.user._id
+          },
+        });
+        // console.log(userLogin);
+        // If user is not found, it will make Unauthorized and make a message
+        if (userLogin.length === 0) {
+          return done(null, false, {
+            message: 'User not found!'
+          })
+        };
+        //check user role if have klinik
+        if (userLogin[0].dataValues.role !== "klinik") {
+          return done(null, false, {
+            message: 'Unauthorized'
+          })
+        };
+
+        //check if user id have the role dokter
+        const dokterRole = await User.findAll({
+          where: {
+            id: req.body.dokterId
+          },
+        });
+        if (dokterRole[0].dataValues.role !== "dokter") {
+          return done(null, false, {
+            message: 'Unauthorized'
+          })
+        };
+        //check num kliniks dokter have registered
+        const numKliniks = await Memiliki.findAll({
+          where: {
+            dokterId: req.body.dokterId
+          },
+        });
+        if (numKliniks.length === 2) {
+          return done(null, false, {
+            message: 'Dokter have been registered on 2 kliniks'
+          })
+        };
+
+
+        const isdDokterBeenAdded = await Memiliki.findAll({
+          where: {
+            [Op.and]: [
+              { dokterId: req.body.dokterId },
+              { klinikId: req.body.klinikId }
+            ]
+          },
+        });
+        if (isdDokterBeenAdded.length !== 0) {
+          return done(null, false, {
+            message: 'Dokter have been registered to this klinik'
+          })
+        }
+
+        // If success, it will return userLogin variable that can be used in the next step
+        return done(null, userLogin, {
+          message: "Authorized!"
+        });
+      } catch (e) {
+        // If error, it will create this message
+        return done(null, false, {
+          message: "Unauthorized! " + e.message,
+        });
+      }
+    }
+  )
+);
+
+
 
 passport.use(
   'jwt',

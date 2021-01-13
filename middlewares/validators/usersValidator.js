@@ -84,6 +84,37 @@ module.exports = {
       next();
     }
   ],
+
+  addPet: [
+    check("nama", "nama must be string and lengt must be between 3-255").isLength({ min: 3, max: 255 }),
+    check("jenis", "Jenis must be kucing, anjing, kelinci, hamster").custom(value => {
+      const jenis = "kucinganjingkelincihamster"
+      if (jenis.includes(value)) {
+        return true
+      }
+      false;
+    }),
+    check('gender', "Gender must be between female or male").isString().custom(value => {
+      const gender = value.toLowerCase().trim();
+      if (gender === "male" || gender === "female") {
+        return true;
+      }
+      return false;
+    }),
+    (req, res, next) => {
+      const errors = validationResult(req); // Collect errors from check function
+      // If errors is not null, it will be return errors response
+      if (!errors.isEmpty()) {
+        return res.status(422).json({
+          errors: errors.mapped(),
+          success: false,
+          code: 422,
+        });
+      }
+      // If no errors, it will go to next step
+      next();
+    }
+  ],
   updateProfile: [
 
     check("nama", "nama must be string and lengt must be between 3-255").custom(value => {

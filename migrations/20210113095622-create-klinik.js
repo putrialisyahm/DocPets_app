@@ -1,22 +1,32 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Memilikis', {
+    await queryInterface.createTable('Kliniks', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      klinikId: {
-        type: Sequelize.INTEGER,
-        foreignKey: true,
-        references: {         // Peliharaan belongsTo User 1:1
-          model: 'Kliniks',
-          key: 'id'
-        }
+      nama: {
+        type: Sequelize.STRING
       },
-      dokterId: {
+      lokasi: {
+        type: Sequelize.STRING
+      },
+      tentang: {
+        type: Sequelize.STRING
+      },
+      fasilitas: {
+        type: Sequelize.STRING
+      },
+      foto: {
+        type: Sequelize.STRING
+      },
+      dokter: {
+        type: Sequelize.INTEGER
+      },
+      adminId: {
         type: Sequelize.INTEGER,
         foreignKey: true,
         references: {         // Peliharaan belongsTo User 1:1
@@ -35,6 +45,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Memilikis');
+    await queryInterface.dropTable('Kliniks');
   }
 };

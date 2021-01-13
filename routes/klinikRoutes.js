@@ -10,11 +10,35 @@ const klinikValidator = require('../middlewares/validators/klinikValidator'); //
 
 router.get("/searchByName/:query", klinikValidator.searchByName, klinikController.searchByName);
 
-// router.use((req, res, next) => {
-//     const err = new Error("Page Not Found");
-//     err.status = 404;
-//     next(err);
-// });
+router.post("/addDokterToKlinik/", [klinikValidator.addDokterToKlinik, function (req, res, next) {
+    passport.authenticate(
+        "checkKlinik",
+        {
+            session: false,
+        },
+        function (err, user, info) {
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
+                res.status(401).json({
+                    message: info.message,
+                    success: false,
+                    code: 401
+                });
+                return;
+            }
+
+            klinikController.addDokterToKlinik(user, req, res, next);
+        }
+    )(req, res, next);
+},
+]);
+router.use((req, res, next) => {
+    const err = new Error("Page Not Found");
+    err.status = 404;
+    next(err);
+});
 
 
 router.get("/hello", function (req, res) {

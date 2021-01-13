@@ -1,4 +1,5 @@
 'use strict';
+const bcrypt = require("bcrypt"); // Import bcrypt
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -8,6 +9,7 @@ module.exports = {
       lokasi: "batam",
       fasilitas: "toilet,whiskas gratis",
       foto: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F3%2F3e%2FHELIOS_ENDO-Klinik_Hamburg_Foto_2013_June_05.jpg&f=1&nofb=1",
+      adminId: 4,
       createdAt: new Date(),
       updatedAt: new Date(),
     },

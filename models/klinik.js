@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Klinik.hasMany(models.Memiliki, { as: 'memiliki' })
+      Klinik.belongsTo(models.User, { foreignKey: 'adminId' })
 
     }
   };
@@ -21,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     tentang: DataTypes.STRING,
     fasilitas: DataTypes.STRING,
     foto: DataTypes.STRING,
+    dokter: DataTypes.INTEGER,
+    adminId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Klinik',

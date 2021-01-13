@@ -25,8 +25,26 @@ const upload = multer({ storage: storage, dest: uploadDir });
 
 module.exports = {
     // Signup validator
-    searchByName: [
-        param('query', 'search terms must be at minimum length 3').isLength({ min: 3, max: 32 }),
+    search: [
+        check('nama', 'search terms must be at minimum length 3').custom(value => {
+            if (!value) {
+                return true
+            }
+            if (value.length > 3 && value.length < 33) {
+                return true;
+            }
+            return false
+        }),
+        check('lokasi', 'search terms must be at minimum length 3').custom(value => {
+            if (!value) {
+                return true
+            }
+            if (value.length > 3 && value.length < 33) {
+                return true;
+            }
+            return false
+        }),
+
         // param(["searc", 'search terms must be at minimum length 3'])
         (req, res, next) => {
             const errors = validationResult(req); // Collect errors from check function

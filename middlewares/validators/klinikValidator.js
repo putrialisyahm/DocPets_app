@@ -60,23 +60,25 @@ module.exports = {
             next();
         }
     ],
+    getKlinikById: [
+        check("id", "id must be a number").isNumeric(),
+        (req, res, next) => {
+            const errors = validationResult(req); // Collect errors from check function
+            // If errors is not null, it will be return errors response
+            if (!errors.isEmpty()) {
+                return res.status(422).json({
+                    errors: errors.mapped(),
+                    success: false,
+                    code: 422,
+                });
+            }
+            // If no errors, it will go to next step
+            next();
+        }
+    ],
     addDokterToKlinik: [
-        check('dokterId', 'Dokter Not Exist').custom(value => {
-            return User.findAll({ where: { id: value } }).then(result => {
-                if (result.length !== 0) {
-                    return true;
-                }
-                return false;
-            })
-        }),
-        check('klinikId', 'Dokter Not Exist').custom(value => {
-            return Klinik.findAll({ where: { id: value } }).then(result => {
-                if (result.length !== 0) {
-                    return true;
-                }
-                return false;
-            })
-        }),
+        check('dokterId', 'Dokter Not Exist').exists(),
+        check('klinikId', 'Klinik Not Exist').exists(),
         (req, res, next) => {
             const errors = validationResult(req); // Collect errors from check function
             // If errors is not null, it will be return errors response

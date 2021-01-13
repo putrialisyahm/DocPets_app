@@ -142,7 +142,7 @@ passport.use(
 
 
 passport.use(
-  'checkKlinik',
+  'checkAuthToAddDokter',
   new JWTstrategy({
     secretOrKey: 'secret_password', // It must be same with secret key when created token
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), // It will extract token from req.header('Authorization')
@@ -158,6 +158,7 @@ passport.use(
             id: token.user._id
           },
         });
+
         // console.log(userLogin);
         // If user is not found, it will make Unauthorized and make a message
         if (userLogin.length === 0) {
@@ -171,13 +172,39 @@ passport.use(
             message: 'Unauthorized'
           })
         };
+        ///check if admin id === with user id
+        const adminId = await Klinik.findAll({
+          where: {
+            id: req.body.klinikId
+          },
+        });
 
-        //check if user id have the role dokter
+        //check if klinik exist
+        if (adminId.length === 0) {
+          return done(null, false, {
+            message: 'Klinik not found!'
+          })
+        };
+
+        if (userLogin[0].dataValues.id !== adminId[0].dataValues.adminId) {
+          return done(null, false, {
+            message: "Unauthorized, You're not this Klinik's admin"
+          })
+        }
+
+        //check if Dokter id have the role dokter
         const dokterRole = await User.findAll({
           where: {
             id: req.body.dokterId
           },
         });
+
+        if (dokterRole.length === 0) {
+          return done(null, false, {
+            message: 'Dokter not found!'
+          })
+        };
+
         if (dokterRole[0].dataValues.role !== "dokter") {
           return done(null, false, {
             message: 'Unauthorized'

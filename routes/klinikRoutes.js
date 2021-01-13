@@ -9,10 +9,13 @@ const klinikValidator = require('../middlewares/validators/klinikValidator'); //
 // if user go to localhost:3000/signup
 
 router.post("/search", klinikValidator.search, klinikController.search);
+router.get("/getAllKlinik", klinikController.getAllKlinik);
+router.get("/getKlinikById/:id", klinikValidator.getKlinikById, klinikController.getKlinikById);
+router.get("/getAllDokterInKlinik/:id", klinikValidator.getKlinikById, klinikController.getAllDokterInKlinik);
 
 router.post("/addDokterToKlinik/", [klinikValidator.addDokterToKlinik, function (req, res, next) {
     passport.authenticate(
-        "checkKlinik",
+        "checkAuthToAddDokter",
         {
             session: false,
         },

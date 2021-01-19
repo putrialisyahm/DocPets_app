@@ -4,9 +4,10 @@ const userRoutes = require('./routes/userRoutes'); // Import routes
 const klinikRoutes = require('./routes/klinikRoutes'); // Import routes
 const fs = require("fs");
 const https = require("https");
+const cors = require('cors');
 
 const app = express(); // Make API
-
+app.use(cors());
 const key = fs.readFileSync("./ssl/privkey.pem", "utf-8");
 const cert = fs.readFileSync("./ssl/fullchain.pem", "utf-8");
 

@@ -30,7 +30,6 @@ class AppointmentController {
             })
             
             const peliharaanPeriksa = req.body.peliharaanId.split(",");
-            console.log(result.dataValues.id)
             for (let i = 0; i < peliharaanPeriksa.length; i++){
                 const createPeriksa = await Periksa.create({
                     appointmentId: result.dataValues.id,

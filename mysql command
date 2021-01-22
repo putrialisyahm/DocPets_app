@@ -9,7 +9,6 @@ GRANT ALL PRIVILEGES ON *.* TO 'vet'@'localhost' WITH GRANT OPTION;
 ssh -i VET.pem ubuntu@13.250.101.249
 
 
-
 sequelize model:generate --name Pemasok --attributes nama:string,email:string,password:string,telepon:integer,foto:string,role:string
 sequelize model:generate --name Memiliki --attributes klinikId:integer,dokterId:integer
  Memiliki.belongsTo(models.User, { foreignKey: 'userId' })
@@ -35,3 +34,5 @@ sequelize seed:generate --name add-data-User
    certbot again. To non-interactively renew *all* of your
    certificates, run "certbot renew"
  - If you like Certbot, please consider supporting our work by:
+
+# deploy baru bisa adddoktertoklinik (server)

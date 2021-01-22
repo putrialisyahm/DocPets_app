@@ -3,7 +3,7 @@ const passport = require('passport'); // Import passport
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const { sendError, sendResponse } = require("./errorHandler");
 // UsersController class declaration
-class UsersController {
+class UserController {
 
   async signup(newUser, req, res, next) {
     // get the req.user from passport authentication
@@ -85,8 +85,7 @@ class UsersController {
   async getUserProfile(user, req, res, next) {
     try {
 
-      //TODO:
-      //     tambahkan jumlah peliharaan, dan banyaknya appointment selesai
+     
       const result = await Peliharaan.findAll({
         where: { userId: user[0].dataValues.id },
         attributes: ['id', 'nama', 'jenis', 'gender', "userId"]
@@ -223,5 +222,4 @@ class UsersController {
 
 
 }
-
-module.exports = new UsersController; // Export UserController
+module.exports = new UserController; // Export UserController

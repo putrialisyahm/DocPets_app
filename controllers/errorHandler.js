@@ -15,4 +15,4 @@ const sendResponse = async function (message, code, result, res) {
     res.status(code).json(response);
 }
 
-module.exports = { sendResponse, sendError }; // Exports all models
+module.exports = { sendResponse, sendError }; // Exports all model

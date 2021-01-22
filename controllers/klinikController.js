@@ -117,4 +117,4 @@ class KlinikController {
 
 }
 
-module.exports = new KlinikController; // Export UserController
+module.exports = new KlinikController; // Export KlinikController

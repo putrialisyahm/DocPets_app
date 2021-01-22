@@ -1,5 +1,3 @@
-
-
 const { param, check, validationResult, matchedData, sanitize } = require('express-validator'); //form validation & sanitize form params
 const { User, Klinik } = require('../../models/') // Import user model
 

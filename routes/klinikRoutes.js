@@ -44,10 +44,6 @@ router.use((req, res, next) => {
 });
 
 
-router.get("/hello", function (req, res) {
-    res.send("slkajdfskld");
-})
-
 //ketika fungsi next dipanggil pakek fungsi ini,
 router.use((err, req, res, next) => {
     res.status(err.status || 500);

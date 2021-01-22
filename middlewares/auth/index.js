@@ -1,6 +1,10 @@
 const passport = require('passport'); // Import passport
 const localStrategy = require('passport-local').Strategy; // Import localStrategy from passport
-const { User, Memiliki, Klinik } = require('../../models'); // Import user model
+const {
+  User,
+  Memiliki,
+  Klinik
+} = require('../../models'); // Import user model
 const bcrypt = require('bcrypt'); // Import bcrypt
 const JWTstrategy = require('passport-jwt').Strategy; // Import JWTstrategy from passport
 const ExtractJWT = require('passport-jwt').ExtractJwt; // Import ExtractJWT from passport
@@ -10,10 +14,10 @@ const Sequelize = require('sequelize');
 passport.use(
   'signup',
   new localStrategy({
-    usernameField: 'email', // It will get from req.body.email
-    passwordField: 'password', // It will get from req.body.password
-    passReqToCallback: true,
-  },
+      usernameField: 'email', // It will get from req.body.email
+      passwordField: 'password', // It will get from req.body.password
+      passReqToCallback: true,
+    },
     async (req, email, password, done) => {
       try {
         // Create new user with email, password and role
@@ -32,7 +36,6 @@ passport.use(
             id: createdUser.id
           },
           attributes: ['id', 'nama', 'email', 'foto', 'role', "gender"]
-
         });
         // If success, it will return newUser variable that can be used in the next step
         return done(null, newUser, {
@@ -52,9 +55,9 @@ passport.use(
 passport.use(
   'login',
   new localStrategy({
-    usernameField: 'email', // It will get from req.body.email
-    passwordField: 'password' // It will get from req.body.password
-  },
+      usernameField: 'email', // It will get from req.body.email
+      passwordField: 'password' // It will get from req.body.password
+    },
     async (email, password, done) => {
       try {
         // Find the user that have been inputed on req.body.email
@@ -106,9 +109,9 @@ passport.use(
 passport.use(
   'checkLogin',
   new JWTstrategy({
-    secretOrKey: 'secret_password', // It must be same with secret key when created token
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
-  },
+      secretOrKey: 'secret_password', // It must be same with secret key when created token
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+    },
     async (token, done) => {
       try {
         // Find the user depends on token that have been extracted
@@ -144,10 +147,10 @@ passport.use(
 passport.use(
   'checkAuthToAddDokter',
   new JWTstrategy({
-    secretOrKey: 'secret_password', // It must be same with secret key when created token
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), // It will extract token from req.header('Authorization')
-    passReqToCallback: true,
-  },
+      secretOrKey: 'secret_password', // It must be same with secret key when created token
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), // It will extract token from req.header('Authorization')
+      passReqToCallback: true,
+    },
     async (req, token, done) => {
       try {
         // Find the user depends on token that have been extracted
@@ -225,9 +228,12 @@ passport.use(
 
         const isdDokterBeenAdded = await Memiliki.findAll({
           where: {
-            [Op.and]: [
-              { dokterId: req.body.dokterId },
-              { klinikId: req.body.klinikId }
+            [Op.and]: [{
+                dokterId: req.body.dokterId
+              },
+              {
+                klinikId: req.body.klinikId
+              }
             ]
           },
         });
@@ -251,31 +257,71 @@ passport.use(
   )
 );
 
-
-
 passport.use(
-  'jwt',
+  'addAppointment',
   new JWTstrategy({
-    secretOrKey: 'secret_password', // It must be same with secret key when created token
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
-  },
-    async (token, done) => {
+      secretOrKey: 'secret_password', // It must be same with secret key when created token
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), // It will extract token from req.header('Authorization')
+      passReqToCallback: true,
+    },
+    async (req, token, done) => {
       try {
         // Find the user depends on token that have been extracted
-        const userLogin = await user.findOne({
+        const peliharaan = req.body.peliharaanId.trim().split(",");
+
+        const Op = Sequelize.Op
+
+        const userLogin = await User.findAll({
           where: {
-            email: token.user.email
+            id: token.user._id
           },
-          attributes: ['id', 'email', 'role']
         });
 
+        // console.log(userLogin);
         // If user is not found, it will make Unauthorized and make a message
-        if (!userLogin) {
+        if (userLogin.length === 0) {
           return done(null, false, {
             message: 'User not found!'
           })
         };
 
+        const isDokterInKlinik = await Klinik.findAll({
+
+          include: [{
+            model: Memiliki,
+            as: "memiliki",
+            attributes: ["dokterId"],
+            where: {
+              [Op.and]: [{
+                  dokterId: req.body.dokterId
+                },
+                {
+                  klinikId: req.body.klinikId
+                }
+              ]
+            },
+          }],
+
+        })
+        //todo: check peliharaan beneran ada apa tidak,s
+        if (isDokterInKlinik.length === 0) {
+          return done(null, false, {
+            message: 'Dokter is not registered to this klinik'
+          })
+        }
+
+        for (let i = 0; i < peliharaan.length; i++) {
+          const result = await User.findAll({
+            where: {
+              id: peliharaan[i],
+            },
+          });
+          if (result.length === 0) {
+            return done(null, false, {
+              message: 'Pet is not registered'
+            })
+          }
+        }
         // If success, it will return userLogin variable that can be used in the next step
         return done(null, userLogin, {
           message: "Authorized!"
@@ -283,7 +329,7 @@ passport.use(
       } catch (e) {
         // If error, it will create this message
         return done(null, false, {
-          message: "Unauthorized!"
+          message: "Unauthorized! " + e.message,
         });
       }
     }

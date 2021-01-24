@@ -36,3 +36,7 @@ sequelize seed:generate --name add-data-User
  - If you like Certbot, please consider supporting our work by:
 
 # deploy baru bisa adddoktertoklinik (server)
+
+Balikan file yg hilang
+git reflog
+git checkout -b temp_branch HEAD@{2}

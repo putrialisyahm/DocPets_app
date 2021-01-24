@@ -1,5 +1,11 @@
+const path = require('path');
+require('dotenv').config({
+  path: `.env.${process.env.NODE_ENV}`
+})
 const passport = require('passport'); // Import passport
+
 const localStrategy = require('passport-local').Strategy; // Import localStrategy from passport
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const {
   User,
   Memiliki,
@@ -9,6 +15,9 @@ const bcrypt = require('bcrypt'); // Import bcrypt
 const JWTstrategy = require('passport-jwt').Strategy; // Import JWTstrategy from passport
 const ExtractJWT = require('passport-jwt').ExtractJwt; // Import ExtractJWT from passport
 const Sequelize = require('sequelize');
+const {
+  profile
+} = require('console');
 
 // It will be used for signup and create the user
 passport.use(
@@ -50,6 +59,35 @@ passport.use(
     },
   )
 );
+
+passport.use(
+  'google',
+  new GoogleStrategy({
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let userLogin = await user.findOne({
+          where: {
+          email: profile.emails[0].value
+          }
+        })
+
+        if (!userLogin) {
+          userLogin = await.user.create({
+            email: profile.emails[0].value,
+            passsword: "this is password for google!"
+          });
+        }
+      return done(null, userLogin);
+    } catch (e) {
+      return done(null, false);
+    }
+  }
+  ));
+
 
 // It will be used for login
 passport.use(

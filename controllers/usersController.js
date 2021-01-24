@@ -117,7 +117,7 @@ class UserController {
     try {
 
       const userInfo = {
-        email: user[0].dataValues.email,
+        emaeil: user[0].dataValues.email,
         foto: "/img/" + user[0].dataValues.foto,
         nama: user[0].dataValues.nama,
         role: user[0].dataValues.role,
@@ -147,7 +147,7 @@ class UserController {
         nama: req.body.nama,
         gender: req.body.gender,
         telepon: req.body.telepon,
-        foto: "default.png"
+        foto: req.file === undefined ? (token[0].dataValues.foto) :  (req.file.filename),
       }
 
       Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
@@ -159,8 +159,11 @@ class UserController {
         })
       sendResponse("Profile Updated Succesfully", 200, {}, res);
     } catch (error) {
-      console.log(error);
-      sendError(error.message, 500, next)
+      const message = {
+        message: "Something went wrong when Accessing Doctor's profile",
+        error: error.message
+      }
+      sendError(message, 501, next)
     }
   }
 
@@ -171,6 +174,7 @@ class UserController {
         nama: req.body.nama,
         gender: req.body.gender,
         telepon: req.body.telepon,
+        foto: req.file === undefined ? ("/img/" + user[0].dataValues.foto) :  (req.file.filename),
         pengalaman: req.body.experience,
         status: req.body.status,
         waktuKerja: req.body.waktuKerja,
@@ -184,7 +188,11 @@ class UserController {
         })
       sendResponse("Profile Updated Succesfully", 200, {}, res);
     } catch (error) {
-      sendError(error.message, 500, next)
+      const message = {
+        message: "Something went wrong when Accessing Doctor's profile",
+        error: error.message
+      }
+      sendError(message, 501, next)
     }
   }
 
@@ -197,7 +205,11 @@ class UserController {
       console.log(result);
       sendResponse("Pets Retrieved Succesfully", 200, result, res);
     } catch (error) {
-      sendError(error.message, 500, next)
+      const message = {
+        message: "Something went wrong when Accessing Doctor's profile",
+        error: error.message
+      }
+      sendError(message, 501, next)
     }
   }
 
@@ -216,10 +228,25 @@ class UserController {
       console.log(result);
       sendResponse("Pets Added Succesfully", 200, {}, res);
     } catch (error) {
-      sendError(error.message, 500, next)
+      const message = {
+        message: "Something went wrong when Accessing Doctor's profile",
+        error: error.message
+      }
+      sendError(message, 501, next)
     }
   }
 
-
+  // async failed(req, res) {
+  //   return res.status(500).json({
+  //     message:"Internal Server Error"
+  //   });
+  // } catch [e] {
+  //   return res.status (500).json ({
+  //     message:"Internal Server Error",
+  //     error: e
+  //   });
+  // }
+  // }
 }
+
 module.exports = new UserController; // Export UserController

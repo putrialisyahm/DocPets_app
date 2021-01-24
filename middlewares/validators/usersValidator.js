@@ -116,11 +116,20 @@ module.exports = {
     }
   ],
   updateProfile: [
-
+    upload.single("image"),
+    // check("image").custom(value => {
+    //   if(value === undefined){
+    //     return true;
+    //   }
+    //   else{
+        
+    //     return true;
+    //   }
+    // }),
     check("nama", "nama must be string and lengt must be between 3-255").custom(value => {
       if (value === undefined)
         return true;
-      else if (value.length < 3 || value.length > 255) {
+      else if (value.length <= 3 || value.length > 255) {
         return false;
       }
       return true;

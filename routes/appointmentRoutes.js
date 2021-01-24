@@ -10,7 +10,7 @@ const appointmentValidator = require('../middlewares/validators/appointmentValid
 router.get("/getAllAppointment", [
     function (req, res, next) {
       passport.authenticate(
-        "checkLogin",
+        "checkUser",
         {
           session: false,
         },
@@ -28,6 +28,33 @@ router.get("/getAllAppointment", [
           }
   
           appointmentController.getAllAppointment(user, req, res, next);
+  
+        }
+      )(req, res, next);
+    },
+  ]);
+
+  router.get("/getAllAppointmentForDokter", [
+    function (req, res, next) {
+      passport.authenticate(
+        "checkDokter",
+        {
+          session: false,
+        },
+        function (err, user, info) {
+          if (err) {
+            return next(err);
+          }
+          if (!user) {
+            res.status(401).json({
+              message: info.message,
+              success: false,
+              code: 401
+            });
+            return;
+          }
+  
+          appointmentController.getAllAppointmentForDokter(user, req, res, next);
   
         }
       )(req, res, next);
@@ -56,6 +83,32 @@ router.post('/addAppointment', [appointmentValidator.addAppointment, function (r
         }
   
         appointmentController.addAppointment(user, req, res, next);
+      }
+    )(req, res, next);
+  },
+  ]);
+
+
+  router.post('/acceptAppointment', [appointmentValidator.acceptAppointment, function (req, res, next) {
+    passport.authenticate(
+      "checkDokter",
+      {
+        session: false,
+      },
+      function (err, user, info) {
+        if (err) {
+          return next(err);
+        }
+        if (!user) {
+          res.status(401).json({
+            message: info.message,
+            success: false,
+            code: 401
+          });
+          return;
+        }
+  
+        appointmentController.acceptAppointment(user, req, res, next);
       }
     )(req, res, next);
   },

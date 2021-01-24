@@ -129,6 +129,34 @@ function (req, res, next) {
 },
 ]);
 
+
+router.put("/changePhotoProfile/", [usersValidator.changePhotoProfile,
+  function (req, res, next) {
+    passport.authenticate(
+      "checkLogin",
+      {
+        session: false,
+      },
+      function (err, user, info) {
+        if (err) {
+          return next(err);
+        }
+        if (!user) {
+          res.status(401).json({
+            message: info.message,
+            success: false,
+            code: 401
+          });
+          return;
+        }
+        
+            usersController.changePhotoProfile(user, req, res, next);
+      }
+    )(req, res, next);
+  },
+  ]);
+
+
 router.put("/addPet", [usersValidator.addPet,
 function (req, res, next) {
   passport.authenticate(

@@ -85,6 +85,8 @@ module.exports = {
     }
   ],
 
+  changePhotoProfile: [upload.single("image"),],
+
   addPet: [
     check("nama", "nama must be string and lengt must be between 3-255").isLength({ min: 3, max: 255 }),
     check("jenis", "Jenis must be kucing, anjing, kelinci, hamster").custom(value => {

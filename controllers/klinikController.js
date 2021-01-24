@@ -105,7 +105,7 @@ class KlinikController {
         } catch (error) {
             const message = {
                 message: "Something went wrong when signing in user",
-                error: error.message
+                errour: error.message
             }
             sendError(message, 501, next)
         }

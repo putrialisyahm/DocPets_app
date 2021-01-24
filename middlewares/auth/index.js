@@ -60,33 +60,33 @@ passport.use(
   )
 );
 
-passport.use(
-  'google',
-  new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let userLogin = await user.findOne({
-          where: {
-          email: profile.emails[0].value
-          }
-        })
+// passport.use(
+//   'google',
+//   new GoogleStrategy({
+//       clientID: process.env.GOOGLE_CLIENT_ID,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//       callbackURL: process.env.GOOGLE_CALLBACK_URL
+//     },
+//     async (accessToken, refreshToken, profile, done) => {
+//       try {
+//         let userLogin = await user.findOne({
+//           where: {
+//           email: profile.emails[0].value
+//           }
+//         })
 
-        if (!userLogin) {
-          userLogin = await.user.create({
-            email: profile.emails[0].value,
-            passsword: "this is password for google!"
-          });
-        }
-      return done(null, userLogin);
-    } catch (e) {
-      return done(null, false);
-    }
-  }
-  ));
+//         if (!userLogin) {
+//           userLogin = await.user.create({
+//             email: profile.emails[0].value,
+//             passsword: "this is password for google!"
+//           });
+//         }
+//       return done(null, userLogin);
+//     } catch (e) {
+//       return done(null, false);
+//     }
+//   }
+//   ));
 
 
 // It will be used for login
@@ -166,6 +166,93 @@ passport.use(
             message: 'User not found!'
           })
         };
+
+        // If success, it will return userLogin variable that can be used in the next step
+        return done(null, userLogin, {
+          message: "Authorized!"
+        });
+      } catch (e) {
+        // If error, it will create this message
+        return done(null, false, {
+          message: "Unauthorized! " + e.message,
+        });
+      }
+    }
+  )
+);
+
+
+passport.use(
+  'checkDokter',
+  new JWTstrategy({
+      secretOrKey: 'secret_password', // It must be same with secret key when created token
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+    },
+    async (token, done) => {
+      try {
+        // Find the user depends on token that have been extracted
+
+        const userLogin = await User.findAll({
+          where: {
+            id: token.user._id
+          },
+        });
+        // console.log(userLogin);
+        // If user is not found, it will make Unauthorized and make a message
+        if (userLogin.length === 0) {
+          return done(null, false, {
+            message: 'User not found!'
+          })
+        };
+
+        if(userLogin[0].dataValues.role !== "dokter"){
+          return done(null, false, {
+            message: "You're  not a Dokter!"
+          })
+        }
+
+        // If success, it will return userLogin variable that can be used in the next step
+        return done(null, userLogin, {
+          message: "Authorized!"
+        });
+      } catch (e) {
+        // If error, it will create this message
+        return done(null, false, {
+          message: "Unauthorized! " + e.message,
+        });
+      }
+    }
+  )
+);
+
+passport.use(
+  'checkUser',
+  new JWTstrategy({
+      secretOrKey: 'secret_password', // It must be same with secret key when created token
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+    },
+    async (token, done) => {
+      try {
+        // Find the user depends on token that have been extracted
+
+        const userLogin = await User.findAll({
+          where: {
+            id: token.user._id
+          },
+        });
+        // console.log(userLogin);
+        // If user is not found, it will make Unauthorized and make a message
+        if (userLogin.length === 0) {
+          return done(null, false, {
+            message: 'User not found!'
+          })
+        };
+
+        if(userLogin[0].dataValues.role !== "user"){
+          return done(null, false, {
+            message: "You're  not a User!"
+          })
+        }
 
         // If success, it will return userLogin variable that can be used in the next step
         return done(null, userLogin, {

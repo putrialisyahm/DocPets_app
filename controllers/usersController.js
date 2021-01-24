@@ -1,7 +1,9 @@
-const { User, Peliharaan } = require('../models') // Import user model
+const { User, Peliharaan, Appointment } = require('../models') // Import user model
 const passport = require('passport'); // Import passport
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const { sendError, sendResponse } = require("./errorHandler");
+const Sequelize = require('sequelize');
+
 // UsersController class declaration
 class UserController {
 
@@ -17,9 +19,10 @@ class UserController {
         {
           user: body,
         },
-        "secret_password"
+        "secret_password" 
       );
       const userInfo = {
+        id: newUser[0].dataValues.id,
         email: newUser[0].dataValues.email,
         foto: "/img/" + newUser[0].dataValues.foto,
         nama: newUser[0].dataValues.nama,
@@ -44,7 +47,7 @@ class UserController {
   }
 
   // If user pass the signup or login authorization, it will go to this function to create and get token
-  async login(user, req, res) {
+  async login(user, req, res, next) {
     try {
       // Create a varible that will be saved in token
       const body = {
@@ -57,6 +60,7 @@ class UserController {
       }, 'secret_password');
 
       const userInfo = {
+        id: user[0].dataValues.id,
         email: user[0].dataValues.email,
         foto: "/img/" + user[0].dataValues.foto,
         nama: user[0].dataValues.nama,
@@ -82,16 +86,39 @@ class UserController {
     }
   }
 
+  async changePhotoProfile(token, req, res, next) {
+    try {
+        const foto = req.file === undefined ? (token[0].dataValues.foto) :  (req.file.filename);
+      
+      const updateProfile = await User.update(
+        {foto: foto},
+        {
+          where: { id: token[0].dataValues.id },
+        })
+      sendResponse("Photo Profile Updated Succesfully", 200, {}, res);
+    } catch (error) {
+      const message = {
+        message: "Something went wrong when Accessing Photo Profile",
+        error: error.message
+      }
+      sendError(message, 501, next)
+    }
+  }
+
   async getUserProfile(user, req, res, next) {
     try {
-
-     
+      const Op = Sequelize.Op
       const result = await Peliharaan.findAll({
         where: { userId: user[0].dataValues.id },
         attributes: ['id', 'nama', 'jenis', 'gender', "userId"]
       })
 
+      const numAppointment = await Appointment.findAll({
+        where:{ [Op.and]:[{ userId: user[0].dataValues.id }, {diterima:true}]},
+      })
+
       const userInfo = {
+        id: user[0].dataValues.id,
         email: user[0].dataValues.email,
         foto: "/img/" + user[0].dataValues.foto,
         nama: user[0].dataValues.nama,
@@ -99,6 +126,7 @@ class UserController {
         gender: user[0].dataValues.gender,
         telepon: user[0].dataValues.telepon,
         numPet: result.length,
+        numAppointment: numAppointment.length
       }
       // If success, it will return user's Profile
       sendResponse("Success Getting User Profile", 200, userInfo, res);
@@ -112,12 +140,12 @@ class UserController {
 
     }
   }
-
   async getDokterProfile(user, req, res, next) {
     try {
 
       const userInfo = {
-        emaeil: user[0].dataValues.email,
+        id: user[0].dataValues.id,
+        email: user[0].dataValues.email,
         foto: "/img/" + user[0].dataValues.foto,
         nama: user[0].dataValues.nama,
         role: user[0].dataValues.role,

@@ -24,6 +24,7 @@ sequelize seed:generate --name add-data-Klinik
 sequelize seed:generate --name add-data-User
 
 
+npm install nodemailer
 
  - Congratulations! Your certificate and chain have been saved at:
    /etc/letsencrypt/live/doctorpets.tk/fullchain.pem

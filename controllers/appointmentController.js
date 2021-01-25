@@ -25,8 +25,7 @@ class AppointmentController {
                 userId: user[0].dataValues.id,
                 klinikId: req.body.klinikId,
                 dokterId: req.body.dokterId,
-                waktu: req.body.waktu,
-
+                waktu: req.body.date,
             })
 
             const peliharaanPeriksa = req.body.peliharaanId.split(",");
@@ -53,15 +52,15 @@ class AppointmentController {
             const Op = Sequelize.Op
             console.log(req.body.diterima)
             const acceptAppointment = await Appointment.update(
-                {diterima: req.body.diterima}, {
-                    where: {
-                        [Op.and]: [{
-                            dokterId: user[0].dataValues.id
-                        }, {
-                            id: req.body.appointmentId
-                        }]
-                    },
-                })
+                { diterima: req.body.diterima }, {
+                where: {
+                    [Op.and]: [{
+                        dokterId: user[0].dataValues.id
+                    }, {
+                        id: req.body.appointmentId
+                    }]
+                },
+            })
 
             // If success, it will return user's Profile
             sendResponse("Success accepting Appointment", 200, acceptAppointment, res);

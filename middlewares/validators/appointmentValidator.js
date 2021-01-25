@@ -1,6 +1,6 @@
 const { param, check, validationResult, matchedData, sanitize } = require('express-validator'); //form validation & sanitize form params
 const { User, Klinik } = require('../../models/') // Import user model
-
+const moment = require('moment');
 const multer = require("multer");
 const path = require("path");
 const crypto = require("crypto");
@@ -21,78 +21,81 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage, dest: uploadDir });
 
 module.exports = {
-addAppointment: [
-    check('klinikId', 'Klinik Not Exist').exists().isNumeric(),
-    check('dokterId', 'Dokter Not Exist').exists().isNumeric(),
-    check('peliharaanId', 'Peliharaan Not Exist').exists(),
-    (req, res, next) => {
-        const errors = validationResult(req); // Collect errors from check function
-        // If errors is not null, it will be return errors response
-        if (!errors.isEmpty()) {
-            return res.status(422).json({
-                errors: errors.mapped(),
-                success: false,
-                code: 422,
-            });
+    addAppointment: [
+        check('klinikId', 'Klinik Not Exist').exists().isNumeric(),
+        check('dokterId', 'Dokter Not Exist').exists().isNumeric(),
+        check('peliharaanId', 'Peliharaan Not Exist').exists(),
+        check('date', "date must be a date").exists().custom(value => {
+            return moment(value).isValid();
+        }),
+        (req, res, next) => {
+            const errors = validationResult(req); // Collect errors from check function
+            // If errors is not null, it will be return errors response
+            if (!errors.isEmpty()) {
+                return res.status(422).json({
+                    errors: errors.mapped(),
+                    success: false,
+                    code: 422,
+                });
+            }
+            // If no errors, it will go to next step
+            next();
         }
-        // If no errors, it will go to next step
-        next();
-    }
-],
-acceptAppointment:[
-    check('appointmentId', 'Klinik Not Exist').exists().isNumeric(),
-    (req, res, next) => {
-        const errors = validationResult(req); // Collect errors from check function
-        // If errors is not null, it will be return errors response
-        if (!errors.isEmpty()) {
-            return res.status(422).json({
-                errors: errors.mapped(),
-                success: false,
-                code: 422,
-            });
+    ],
+    acceptAppointment: [
+        check('appointmentId', 'Klinik Not Exist').exists().isNumeric(),
+        (req, res, next) => {
+            const errors = validationResult(req); // Collect errors from check function
+            // If errors is not null, it will be return errors response
+            if (!errors.isEmpty()) {
+                return res.status(422).json({
+                    errors: errors.mapped(),
+                    success: false,
+                    code: 422,
+                });
+            }
+            // If no errors, it will go to next step
+            next();
         }
-        // If no errors, it will go to next step
-        next();
-    }
-],
+    ],
 
-getAllAppointment: [
-    // check('klinikId', 'Klinik Not Exist').exists().isNumeric(),
-    // check('dokterId', 'Dokter Not Exist').exists().isNumeric(),
-    // check('peliharaanId', 'Peliharaan Not Exist').exists(),
-    (req, res, next) => {
-        const errors = validationResult(req); // Collect errors from check function
-        // If errors is not null, it will be return errors response
-        if (!errors.isEmpty()) {
-            return res.status(422).json({
-                errors: errors.mapped(),
-                success: false,
-                code: 422,
-            });
+    getAllAppointment: [
+        // check('klinikId', 'Klinik Not Exist').exists().isNumeric(),
+        // check('dokterId', 'Dokter Not Exist').exists().isNumeric(),
+        // check('peliharaanId', 'Peliharaan Not Exist').exists(),
+        (req, res, next) => {
+            const errors = validationResult(req); // Collect errors from check function
+            // If errors is not null, it will be return errors response
+            if (!errors.isEmpty()) {
+                return res.status(422).json({
+                    errors: errors.mapped(),
+                    success: false,
+                    code: 422,
+                });
+            }
+            // If no errors, it will go to next step
+            next();
         }
-        // If no errors, it will go to next step
-        next();
-    }
-],
+    ],
 
-updateAppointment: [
-    check('klinikId', 'Klinik Not Exist').exists().isNumeric(),
-    check('dokterId', 'Dokter Not Exist').exists().isNumeric(),
-    check('peliharaanId', 'Peliharaan Not Exist').exists(),
-    (req, res, next) => {
-        const errors = validationResult(req); // Collect errors from check function
-        // If errors is not null, it will be return errors response
-        if (!errors.isEmpty()) {
-            return res.status(422).json({
-                errors: errors.mapped(),
-                success: false,
-                code: 422,
-            });
+    updateAppointment: [
+        check('klinikId', 'Klinik Not Exist').exists().isNumeric(),
+        check('dokterId', 'Dokter Not Exist').exists().isNumeric(),
+        check('peliharaanId', 'Peliharaan Not Exist').exists(),
+        (req, res, next) => {
+            const errors = validationResult(req); // Collect errors from check function
+            // If errors is not null, it will be return errors response
+            if (!errors.isEmpty()) {
+                return res.status(422).json({
+                    errors: errors.mapped(),
+                    success: false,
+                    code: 422,
+                });
+            }
+            // If no errors, it will go to next step
+            next();
         }
-        // If no errors, it will go to next step
-        next();
-    }
-],
+    ],
 
 };
 

@@ -23,10 +23,10 @@ const {
 passport.use(
   'signup',
   new localStrategy({
-      usernameField: 'email', // It will get from req.body.email
-      passwordField: 'password', // It will get from req.body.password
-      passReqToCallback: true,
-    },
+    usernameField: 'email', // It will get from req.body.email
+    passwordField: 'password', // It will get from req.body.password
+    passReqToCallback: true,
+  },
     async (req, email, password, done) => {
       try {
         // Create new user with email, password and role
@@ -93,9 +93,9 @@ passport.use(
 passport.use(
   'login',
   new localStrategy({
-      usernameField: 'email', // It will get from req.body.email
-      passwordField: 'password' // It will get from req.body.password
-    },
+    usernameField: 'email', // It will get from req.body.email
+    passwordField: 'password' // It will get from req.body.password
+  },
     async (email, password, done) => {
       try {
         // Find the user that have been inputed on req.body.email
@@ -147,9 +147,9 @@ passport.use(
 passport.use(
   'checkLogin',
   new JWTstrategy({
-      secretOrKey: 'secret_password', // It must be same with secret key when created token
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
-    },
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+  },
     async (token, done) => {
       try {
         // Find the user depends on token that have been extracted
@@ -185,9 +185,9 @@ passport.use(
 passport.use(
   'checkDokter',
   new JWTstrategy({
-      secretOrKey: 'secret_password', // It must be same with secret key when created token
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
-    },
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+  },
     async (token, done) => {
       try {
         // Find the user depends on token that have been extracted
@@ -205,7 +205,7 @@ passport.use(
           })
         };
 
-        if(userLogin[0].dataValues.role !== "dokter"){
+        if (userLogin[0].dataValues.role !== "dokter") {
           return done(null, false, {
             message: "You're  not a Dokter!"
           })
@@ -228,9 +228,9 @@ passport.use(
 passport.use(
   'checkUser',
   new JWTstrategy({
-      secretOrKey: 'secret_password', // It must be same with secret key when created token
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
-    },
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+  },
     async (token, done) => {
       try {
         // Find the user depends on token that have been extracted
@@ -248,7 +248,7 @@ passport.use(
           })
         };
 
-        if(userLogin[0].dataValues.role !== "user"){
+        if (userLogin[0].dataValues.role !== "user") {
           return done(null, false, {
             message: "You're  not a User!"
           })
@@ -272,10 +272,10 @@ passport.use(
 passport.use(
   'checkAuthToAddDokter',
   new JWTstrategy({
-      secretOrKey: 'secret_password', // It must be same with secret key when created token
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), // It will extract token from req.header('Authorization')
-      passReqToCallback: true,
-    },
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), // It will extract token from req.header('Authorization')
+    passReqToCallback: true,
+  },
     async (req, token, done) => {
       try {
         // Find the user depends on token that have been extracted
@@ -354,11 +354,11 @@ passport.use(
         const isdDokterBeenAdded = await Memiliki.findAll({
           where: {
             [Op.and]: [{
-                dokterId: req.body.dokterId
-              },
-              {
-                klinikId: req.body.klinikId
-              }
+              dokterId: req.body.dokterId
+            },
+            {
+              klinikId: req.body.klinikId
+            }
             ]
           },
         });
@@ -385,10 +385,10 @@ passport.use(
 passport.use(
   'addAppointment',
   new JWTstrategy({
-      secretOrKey: 'secret_password', // It must be same with secret key when created token
-      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), // It will extract token from req.header('Authorization')
-      passReqToCallback: true,
-    },
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(), // It will extract token from req.header('Authorization')
+    passReqToCallback: true,
+  },
     async (req, token, done) => {
       try {
         // Find the user depends on token that have been extracted
@@ -418,11 +418,11 @@ passport.use(
             attributes: ["dokterId"],
             where: {
               [Op.and]: [{
-                  dokterId: req.body.dokterId
-                },
-                {
-                  klinikId: req.body.klinikId
-                }
+                dokterId: req.body.dokterId
+              },
+              {
+                klinikId: req.body.klinikId
+              }
               ]
             },
           }],
@@ -447,6 +447,17 @@ passport.use(
             })
           }
         }
+
+        //check date is not in the past
+        const appointmentDate = new Date(req.body.date);
+        if (appointmentDate < Date.now()) {
+          return done(null, false, {
+            message: 'Invalid Date'
+          })
+        }
+
+        //check if date is occupied with the dokter
+
         // If success, it will return userLogin variable that can be used in the next step
         return done(null, userLogin, {
           message: "Authorized!"

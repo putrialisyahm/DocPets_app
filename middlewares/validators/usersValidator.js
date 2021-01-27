@@ -84,6 +84,25 @@ module.exports = {
       next();
     }
   ],
+  changePassword: [
+    check('oldPassword', 'password field must have 4 to 32 characters').isString().isLength({ min: 4, max: 32 }),
+    check('password', 'password field must have 4 to 32 characters').isString().isLength({ min: 4, max: 32 }), // validator for password field
+    check('passwordConfirmation', 'passwordConfirmation field must have the same value as the password field').exists().custom((value, { req }) => value === req.body.password), // validator for passwordConfirmation field
+    
+    (req, res, next) => {
+      const errors = validationResult(req); // Collect errors from check function
+      // If errors is not null, it will be return errors response
+      if (!errors.isEmpty()) {
+        return res.status(422).json({
+          errors: errors.mapped(),
+          success: false,
+          code: 422,
+        });
+      }
+      // If no errors, it will go to next step
+      next();
+    }
+  ],
 
   changePhotoProfile: [upload.single("image"),],
 

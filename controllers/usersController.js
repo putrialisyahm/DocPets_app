@@ -3,6 +3,7 @@ const passport = require('passport'); // Import passport
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const { sendError, sendResponse } = require("./errorHandler");
 const Sequelize = require('sequelize');
+const bcrypt = require("bcrypt"); // Import bcrypt
 
 // UsersController class declaration
 class UserController {
@@ -194,6 +195,34 @@ class UserController {
       sendError(message, 501, next)
     }
   }
+
+  async changePassword(token, req, res, next) {
+    try {
+      const Op = Sequelize.Op
+      const validate = await bcrypt.compare(token[0].dataValues.password, req.body.password);
+      
+
+      if (validate) {
+        sendResponse("Wrong Password", 401, {}, res);
+      }
+      else {
+        const updateProfile = await User.update(
+          { password : req.body.password},
+           {
+             where: { id: token[0].dataValues.id },
+           })
+         sendResponse("Password Updated Succesfully", 200, {}, res);
+      }
+      
+    } catch (error) {
+      const message = {
+        message: "Something went wrong when Changing Password",
+        error: error.message
+      }
+      sendError(message, 501, next)
+    }
+  }
+
 
   async updateDokterProfile(token, req, res, next) {
     try {

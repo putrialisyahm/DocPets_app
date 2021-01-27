@@ -23,8 +23,8 @@ sequelize model:generate --name Klinik --attributes nama:string,lokasi:string,te
 sequelize seed:generate --name add-data-Klinik
 sequelize seed:generate --name add-data-User
 
-
-npm install nodemailer
+Sequelize db:seed:all
+npm i passport nodemailer
 
  - Congratulations! Your certificate and chain have been saved at:
    /etc/letsencrypt/live/doctorpets.tk/fullchain.pem

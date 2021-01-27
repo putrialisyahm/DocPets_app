@@ -295,7 +295,7 @@ passport.use(
           })
         };
         //check user role if have klinik
-        if (userLogin[0].dataValues.role !== "klinik") {
+        if ((userLogin[0].dataValues.role !== "klinik")) {
           return done(null, false, {
             message: 'Unauthorized'
           })
@@ -314,7 +314,7 @@ passport.use(
           })
         };
 
-        if (userLogin[0].dataValues.id !== adminId[0].dataValues.adminId) {
+        if ((userLogin[0].dataValues.id !== adminId[0].dataValues.adminId) ) {
           return done(null, false, {
             message: "Unauthorized, You're not this Klinik's admin"
           })
@@ -471,3 +471,46 @@ passport.use(
     }
   )
 );
+
+passport.use(
+  'checkAdmin',
+  new JWTstrategy({
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+  },
+    async (token, done) => {
+      try {
+        // Find the user depends on token that have been extracted
+
+        const userLogin = await User.findAll({
+          where: {
+            id: token.user._id
+          },
+        });
+        // console.log(userLogin);
+        // If user is not found, it will make Unauthorized and make a message
+        if (userLogin.length === 0) {
+          return done(null, false, {
+            message: 'User not found!'
+          })
+        };
+
+        if (userLogin[0].dataValues.role !== "admin") {
+          return done(null, false, {
+            message: "You're  not an Admin!"
+          })
+        }
+
+        // If success, it will return userLogin variable that can be used in the next step
+        return done(null, userLogin, {
+          message: "Authorized!"
+        });
+      } catch (e) {
+        // If error, it will create this message
+        return done(null, false, {
+          message: "Unauthorized! " + e.message,
+        });
+      }
+    }
+  )
+);2

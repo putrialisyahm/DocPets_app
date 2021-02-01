@@ -88,6 +88,32 @@ router.put("/updateKlinik/", [adminValidator.updateKlinik, function (req, res, n
 },
 ]);
 
+router.post("/changeKlinikPhoto/", [adminValidator.changeKlinikPhoto, function (req, res, next) {
+    passport.authenticate(
+        "checkAdmin",
+        {
+            session: false,
+        },
+        function (err, user, info) {
+            if (err) {
+                return next(err);
+            }
+            if (!user) {
+                res.status(401).json({
+                    message: info.message,
+                    success: false,
+                    code: 401
+                });
+                return;
+            }
+
+            adminController.changeKlinikPhoto(user, req, res, next);
+        }
+    )(req, res, next);
+},
+]);
+
+
 router.put("/addAdminToKlinik/", [adminValidator.addAdminToKlinik, function (req, res, next) {
     passport.authenticate(
         "checkAdmin",

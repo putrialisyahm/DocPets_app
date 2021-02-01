@@ -13,10 +13,10 @@ class KlinikController {
             const Op = Sequelize.Op
             let query = [];
             if (req.body.nama) {
-                query.push({ nama: { [Op.like]: "%" + req.body.nama + "%" } })
+                query.push({ nama: { [Op.like]: "%" + req.body.nama.toLowerCase() + "%" } })
             }
             if (req.body.lokasi) {
-                query.push({ lokasi: req.body.lokasi })
+                query.push({ lokasi: req.body.lokasi.toLowerCase() })
             }
             const result = await Klinik.findAll({ where: { [Op.and]: query }, });
             sendResponse("Search success!", 200, result, res);

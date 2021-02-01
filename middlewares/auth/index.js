@@ -9,7 +9,8 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const {
   User,
   Memiliki,
-  Klinik
+  Klinik,
+  Appointment
 } = require('../../models'); // Import user model
 const bcrypt = require('bcrypt'); // Import bcrypt
 const JWTstrategy = require('passport-jwt').Strategy; // Import JWTstrategy from passport
@@ -314,7 +315,7 @@ passport.use(
           })
         };
 
-        if ((userLogin[0].dataValues.id !== adminId[0].dataValues.adminId) ) {
+        if ((userLogin[0].dataValues.id !== adminId[0].dataValues.adminId)) {
           return done(null, false, {
             message: "Unauthorized, You're not this Klinik's admin"
           })
@@ -450,13 +451,49 @@ passport.use(
 
         //check date is not in the past
         const appointmentDate = new Date(req.body.date);
+        console.log(appointmentDate.getHours())
+
+        if ((appointmentDate.getHours() !== 10 && appointmentDate.getHours() !== 12 && appointmentDate.getHours() !== 14) || appointmentDate.getMinutes() !== 0) {
+          return done(null, false, {
+            message: 'Invalid Date, date must be 10, 12, or 14'
+          })
+        }
         if (appointmentDate < Date.now()) {
           return done(null, false, {
             message: 'Invalid Date'
           })
         }
 
+
         //check if date is occupied with the dokter
+        const dokterAppointment = await Appointment.findAll({
+          where: {
+            [Op.and]: [{
+              dokterId: req.body.dokterId
+            },
+            {
+              klinikId: req.body.klinikId
+            }
+            ]
+          },
+        })
+
+        let occupiedDate;
+        for (let i = 0; i < dokterAppointment.length; i++) {
+          // console.log(dokterAppointment[i].dataValues.waktu);
+          occupiedDate = new Date(dokterAppointment[i].dataValues.waktu)
+
+          if (appointmentDate.getFullYear() === occupiedDate.getFullYear() &&
+            appointmentDate.getMonth() === occupiedDate.getMonth() &&
+            appointmentDate.getDate() === occupiedDate.getDate() &&
+            appointmentDate.getHours() === occupiedDate.getHours()
+          ) {
+
+            return done(null, false, {
+              message: 'Date has been occupied by another patient'
+            })
+          }
+        }
 
         // If success, it will return userLogin variable that can be used in the next step
         return done(null, userLogin, {
@@ -513,4 +550,4 @@ passport.use(
       }
     }
   )
-);2
+); 2

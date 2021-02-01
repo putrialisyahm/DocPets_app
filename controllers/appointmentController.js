@@ -38,10 +38,10 @@ class AppointmentController {
             }
 
             const content = {
-                Username :user[0].dataValues.id,
+                Username: user[0].dataValues.id,
                 Klinik: req.body.klinikId,
             }
-            mail.sendEmail();
+            // mail.sendEmail();
 
             sendResponse("Add Appointment success!", 200, result, res);
         } catch (error) {

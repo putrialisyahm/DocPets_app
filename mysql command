@@ -23,8 +23,9 @@ sequelize model:generate --name Klinik --attributes nama:string,lokasi:string,te
 sequelize seed:generate --name add-data-Klinik
 sequelize seed:generate --name add-data-User
 
-
-npm install nodemailer
+Sequelize db:seed:all
+npm i passport nodemailer
+npm install mustache --save
 
  - Congratulations! Your certificate and chain have been saved at:
    /etc/letsencrypt/live/doctorpets.tk/fullchain.pem
@@ -41,3 +42,27 @@ npm install nodemailer
 Balikan file yg hilang
 git reflog
 git checkout -b temp_branch HEAD@{2}
+
+
+
+const isPrime = num => {
+  if(num === 1){
+  return `${num} IS NOT A PRIME`;
+  }
+  for (let i = 2; i < num; i++){
+    if (num % i === 0 ) return `${num} IS NOT A PRIME`;
+  }
+  
+  return `${num} IS A PRIME`; 
+  // do code here
+
+}
+
+// do not change this code below
+const test = (testCase, result) => console.log(testCase === result);
+
+test(isPrime(2), '2 IS A PRIME')
+test(isPrime(283), '283 IS A PRIME')
+test(isPrime(21), '21 IS NOT A PRIME')
+test(isPrime(389), '389 IS A PRIME')
+test(isPrime(973), '973 IS NOT A PRIME')

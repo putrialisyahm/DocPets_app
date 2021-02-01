@@ -9,7 +9,8 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const {
   User,
   Memiliki,
-  Klinik
+  Klinik,
+  Appointment
 } = require('../../models'); // Import user model
 const bcrypt = require('bcrypt'); // Import bcrypt
 const JWTstrategy = require('passport-jwt').Strategy; // Import JWTstrategy from passport
@@ -295,7 +296,7 @@ passport.use(
           })
         };
         //check user role if have klinik
-        if (userLogin[0].dataValues.role !== "klinik") {
+        if ((userLogin[0].dataValues.role !== "klinik")) {
           return done(null, false, {
             message: 'Unauthorized'
           })
@@ -314,7 +315,7 @@ passport.use(
           })
         };
 
-        if (userLogin[0].dataValues.id !== adminId[0].dataValues.adminId) {
+        if ((userLogin[0].dataValues.id !== adminId[0].dataValues.adminId)) {
           return done(null, false, {
             message: "Unauthorized, You're not this Klinik's admin"
           })
@@ -450,13 +451,49 @@ passport.use(
 
         //check date is not in the past
         const appointmentDate = new Date(req.body.date);
+        console.log(appointmentDate.getHours())
+
+        if ((appointmentDate.getHours() !== 10 && appointmentDate.getHours() !== 12 && appointmentDate.getHours() !== 14) || appointmentDate.getMinutes() !== 0) {
+          return done(null, false, {
+            message: 'Invalid Date, date must be 10, 12, or 14'
+          })
+        }
         if (appointmentDate < Date.now()) {
           return done(null, false, {
             message: 'Invalid Date'
           })
         }
 
+
         //check if date is occupied with the dokter
+        const dokterAppointment = await Appointment.findAll({
+          where: {
+            [Op.and]: [{
+              dokterId: req.body.dokterId
+            },
+            {
+              klinikId: req.body.klinikId
+            }
+            ]
+          },
+        })
+
+        let occupiedDate;
+        for (let i = 0; i < dokterAppointment.length; i++) {
+          // console.log(dokterAppointment[i].dataValues.waktu);
+          occupiedDate = new Date(dokterAppointment[i].dataValues.waktu)
+
+          if (appointmentDate.getFullYear() === occupiedDate.getFullYear() &&
+            appointmentDate.getMonth() === occupiedDate.getMonth() &&
+            appointmentDate.getDate() === occupiedDate.getDate() &&
+            appointmentDate.getHours() === occupiedDate.getHours()
+          ) {
+
+            return done(null, false, {
+              message: 'Date has been occupied by another patient'
+            })
+          }
+        }
 
         // If success, it will return userLogin variable that can be used in the next step
         return done(null, userLogin, {
@@ -471,3 +508,46 @@ passport.use(
     }
   )
 );
+
+passport.use(
+  'checkAdmin',
+  new JWTstrategy({
+    secretOrKey: 'secret_password', // It must be same with secret key when created token
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken() // It will extract token from req.header('Authorization')
+  },
+    async (token, done) => {
+      try {
+        // Find the user depends on token that have been extracted
+
+        const userLogin = await User.findAll({
+          where: {
+            id: token.user._id
+          },
+        });
+        // console.log(userLogin);
+        // If user is not found, it will make Unauthorized and make a message
+        if (userLogin.length === 0) {
+          return done(null, false, {
+            message: 'User not found!'
+          })
+        };
+
+        if (userLogin[0].dataValues.role !== "admin") {
+          return done(null, false, {
+            message: "You're  not an Admin!"
+          })
+        }
+
+        // If success, it will return userLogin variable that can be used in the next step
+        return done(null, userLogin, {
+          message: "Authorized!"
+        });
+      } catch (e) {
+        // If error, it will create this message
+        return done(null, false, {
+          message: "Unauthorized! " + e.message,
+        });
+      }
+    }
+  )
+); 2

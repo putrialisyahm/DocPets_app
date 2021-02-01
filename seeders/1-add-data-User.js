@@ -4,7 +4,9 @@ const bcrypt = require("bcrypt"); // Import bcrypt
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const pass = await bcrypt.hashSync("password", 10)
-    return queryInterface.bulkInsert('Users', [{
+    return queryInterface.bulkInsert('Users', [
+
+        {
       nama: "Muhammad Ilham",
       gender: "male",
       email: "satu@gmail.com",
@@ -188,7 +190,18 @@ module.exports = {
       password: pass,
       createdAt: new Date(),
       updatedAt: new Date(),
-    }
+    },
+    {
+      nama: "Muhammad Ilham",
+      gender: "male",
+      email: "admin@admin.com",
+      telepon: "21123123",
+      foto: "default.png",
+      role: "admin",
+      password: pass,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+       },
     ])
 
   },

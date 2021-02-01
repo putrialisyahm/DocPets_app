@@ -3,6 +3,7 @@ const passport = require('passport'); // Import passport
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const { sendError, sendResponse } = require("./errorHandler");
 const Sequelize = require('sequelize');
+const bcrypt = require("bcrypt"); // Import bcrypt
 
 // UsersController class declaration
 class UserController {
@@ -19,7 +20,7 @@ class UserController {
         {
           user: body,
         },
-        "secret_password" 
+        "secret_password"
       );
       const userInfo = {
         id: newUser[0].dataValues.id,
@@ -88,10 +89,10 @@ class UserController {
 
   async changePhotoProfile(token, req, res, next) {
     try {
-        const foto = req.file === undefined ? (token[0].dataValues.foto) :  (req.file.filename);
-      
+      const foto = req.file === undefined ? (token[0].dataValues.foto) : (req.file.filename);
+
       const updateProfile = await User.update(
-        {foto: foto},
+        { foto: foto },
         {
           where: { id: token[0].dataValues.id },
         })
@@ -114,7 +115,7 @@ class UserController {
       })
 
       const numAppointment = await Appointment.findAll({
-        where:{ [Op.and]:[{ userId: user[0].dataValues.id }, {diterima:true}]},
+        where: { [Op.and]: [{ userId: user[0].dataValues.id }, { diterima: true }] },
       })
 
       const userInfo = {
@@ -175,7 +176,7 @@ class UserController {
         nama: req.body.nama,
         gender: req.body.gender,
         telepon: req.body.telepon,
-        foto: req.file === undefined ? (token[0].dataValues.foto) :  (req.file.filename),
+        foto: req.file === undefined ? (token[0].dataValues.foto) : (req.file.filename),
       }
 
       Object.keys(data).forEach(key => data[key] === undefined && delete data[key])
@@ -195,6 +196,35 @@ class UserController {
     }
   }
 
+  async changePassword(token, req, res, next) {
+    try {
+      const Op = Sequelize.Op
+      const validate = await bcrypt.compare(req.body.oldPassword, token[0].dataValues.password);
+
+
+      console.log(validate)
+      if (!validate) {
+        sendResponse("Wrong Password", 401, {}, res);
+      }
+      else {
+        const updateProfile = await User.update(
+          { password: req.body.password },
+          {
+            where: { id: token[0].dataValues.id },
+          })
+        sendResponse("Password Updated Succesfully", 200, {}, res);
+      }
+
+    } catch (error) {
+      const message = {
+        message: "Something went wrong when Changing Password",
+        error: error.message
+      }
+      sendError(message, 501, next)
+    }
+  }
+
+
   async updateDokterProfile(token, req, res, next) {
     try {
 
@@ -202,7 +232,7 @@ class UserController {
         nama: req.body.nama,
         gender: req.body.gender,
         telepon: req.body.telepon,
-        foto: req.file === undefined ? ("/img/" + user[0].dataValues.foto) :  (req.file.filename),
+        foto: req.file === undefined ? ("/img/" + user[0].dataValues.foto) : (req.file.filename),
         pengalaman: req.body.experience,
         status: req.body.status,
         waktuKerja: req.body.waktuKerja,

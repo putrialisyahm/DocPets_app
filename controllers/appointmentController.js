@@ -9,6 +9,7 @@ const {
 const passport = require('passport'); // Import passport
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
 const Sequelize = require('sequelize');
+const mail = require('./nodeMailer.js');
 
 const {
     sendError,
@@ -36,6 +37,11 @@ class AppointmentController {
                 })
             }
 
+            const content = {
+                Username: user[0].dataValues.id,
+                Klinik: req.body.klinikId,
+            }
+            // mail.sendEmail();
 
             sendResponse("Add Appointment success!", 200, result, res);
         } catch (error) {

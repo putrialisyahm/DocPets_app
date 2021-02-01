@@ -33,7 +33,7 @@ module.exports = {
 
     }),// validator for email field
 
-    check('password', 'password field must have 8 to 32 characters').isString().isLength({ min: 8, max: 32 }), // validator for password field
+    check('password', 'password field must have 8 to 32 characters').isString().isLength({ min: 4, max: 32 }), // validator for password field
     check('passwordConfirmation', 'passwordConfirmation field must have the same value as the password field').exists().custom((value, { req }) => value === req.body.password), // validator for passwordConfirmation field
     check('gender', "Gender must be between female or male").isString().custom(value => {
       const gender = value.toLowerCase().trim();
@@ -44,7 +44,7 @@ module.exports = {
     }),
     check('role', "role must be user, admin").custom(value => {
       let lowercase = value.toLowerCase().trim();
-      if (lowercase === "user" || lowercase === "klinik") {
+      if (lowercase === "user" || lowercase === "klinik" || lowecase === "admin") {
         return true;
       }
       return false;
@@ -69,7 +69,26 @@ module.exports = {
   ],
   login: [
     check('email', 'email field must be email address').normalizeEmail().isEmail(), // validator for email field
-    check('password', 'password field must have 8 to 32 characters').isString().isLength({ min: 8, max: 32 }), // validator for password field
+    check('password', 'password field must have 4 to 32 characters').isString().isLength({ min: 4, max: 32 }), // validator for password field
+    (req, res, next) => {
+      const errors = validationResult(req); // Collect errors from check function
+      // If errors is not null, it will be return errors response
+      if (!errors.isEmpty()) {
+        return res.status(422).json({
+          errors: errors.mapped(),
+          success: false,
+          code: 422,
+        });
+      }
+      // If no errors, it will go to next step
+      next();
+    }
+  ],
+  changePassword: [
+    check('oldPassword', 'password field must have 4 to 32 characters').isString().isLength({ min: 4, max: 32 }),
+    check('password', 'password field must have 4 to 32 characters').isString().isLength({ min: 4, max: 32 }), // validator for password field
+    check('passwordConfirmation', 'passwordConfirmation field must have the same value as the password field').exists().custom((value, { req }) => value === req.body.password), // validator for passwordConfirmation field
+    
     (req, res, next) => {
       const errors = validationResult(req); // Collect errors from check function
       // If errors is not null, it will be return errors response

@@ -6,7 +6,7 @@ module.exports = {
     return queryInterface.bulkInsert('Kliniks', [{
       nama: "Klinik Peliharaan Sejati",
       tentang: "klinik terbaik untuk para pria sejati",
-      lokasi: "batam",
+      lokasi: "Bandung",
       fasilitas: "toilet,whiskas gratis",
       foto: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F3%2F3e%2FHELIOS_ENDO-Klinik_Hamburg_Foto_2013_June_05.jpg&f=1&nofb=1",
       adminId: 7,
@@ -16,7 +16,7 @@ module.exports = {
     {
       nama: "RUMAH SAKIT HEWAN JAWA BARAT",
       tentang: "Rumah Sakit Khusus Hewan Terbesar di Daerah Jawa Barat",
-      lokasi: "bandung",
+      lokasi: "Bandung",
       fasilitas: "Makanan Hewan, Animal Toys, Grooming, Sterilisasi",
       foto: "https://jabarprov.go.id/assets/images/galeri/843_DSC_2927.jpg",
       createdAt: new Date(),
@@ -26,7 +26,7 @@ module.exports = {
     {
       nama: "RSH Prof. Soeparwi",
       tentang: "We Care, We Cure -- Rumah Sakit Hewan Prof. Soeparwi terletak di Kampus UGM, Yogyakarta, Indonesia & berkomitmen untuk memberikan pelayanan kesehatan terbaik kepada hewan kesayangan Anda.",
-      lokasi: "Yogyakarta",
+      lokasi: "Jogja",
       fasilitas: "Pemeriksaan, Rawat inap & penitipan sehat, Penelitian, Grooming, Vaksinasi, Laboratorium X-ray & USG, Ambulance antar-jemput",
       foto: "https://lh3.googleusercontent.com/p/AF1QipPPISMN-LC96rHNKM98ZCv1tERFSbIUgzcx0F8l=s1600-w1000",      
       createdAt: new Date(),
@@ -36,7 +36,7 @@ module.exports = {
     {
       nama: "RSH RAGUNAN",
       tentang: "Rumah Sakit hewan terbaik yang lengkap untuk hewan peliharaan anda",
-      lokasi: "jakarta",
+      lokasi: "Jakarta",
       fasilitas: "general checkup, surgery, daycare, lab checking, ugd, vaksin, apotek, kremasi",
       foto: "http://www.rumahsakithewanjakarta.com/img/aboutus/660939871.jpg",
       createdAt: new Date(),

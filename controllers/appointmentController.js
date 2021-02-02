@@ -150,7 +150,7 @@ class AppointmentController {
                 waktu: req.body.waktu,
 
             })
-            console.log(result);
+            
             sendResponse("Update Appointment success!", 200, result, res);
         } catch (error) {
             const message = {

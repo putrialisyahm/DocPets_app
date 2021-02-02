@@ -41,7 +41,7 @@ module.exports = {
       foto: "http://www.rumahsakithewanjakarta.com/img/aboutus/660939871.jpg",
       createdAt: new Date(),
       updatedAt: new Date(),
-      // adminId: ,
+      adminId: 10,
     },
     {
       nama: "Klinik Hewan Waras Satwa",
@@ -55,7 +55,7 @@ module.exports = {
     },
     {
       nama: "Klinik Hewan Jogja",
-      tentang: "Pemeriksaan rutin untuk memonitoring kesehatan dibutuhkan hewan kesayangan agar terhindar dari berbagai macam penyakit berbahaya yang dapat menular antar hewan ataupun manusia.Lab.Klinik “Klinik Hewan Jogja” menyediakan pelayanan untuk pemeriksaan klinis rutin dan general check up untuk berbagai hewan kesayangan termasuk anjing, kucing, maupun hewan lainnya",
+      tentang: "Pemeriksaan monitoring kesehatan hewan yang menyediakan pelayanan untuk pemeriksaan klinis rutin dan general check up",
       lokasi: "Jogja",
       fasilitas: "Fasilitas Ruang dan Fasilitas Medis",
       foto: "https://klinikhewanjogja.com/main/wp-content/uploads/2014/03/IMG_9733-980x445.jpg",
@@ -76,7 +76,7 @@ module.exports = {
     },
     {
       nama: "RS Hewan Setail Surabaya",
-      tentang: "Dengan peralatan yang memadai dan tenaga medis yang berpengalaman, RS Hewan Setail ini menjadi jujugan pemelihara penyuka hewan dan pengembang biak hewan piaraan. Tidak hanya itu, tarif layanan perawatan hewan kesayangan di tempat milik Pemprov Jatim ini juga terjangkau.",
+      tentang: "Dengan peralatan yang memadai dan tenaga medis yang berpengalaman, tarif layanan perawatan hewan kesayangan di tempat milik Pemprov Jatim ini juga terjangkau.",
       lokasi: "Surabaya",
       fasilitas: "pemeriksaan hewan, vaksin",
       foto: "https://jatimnow.com/po-content/uploads/2383886__lj3KuGzlNCSVxn-VffIHdfIgvQaR7bAlRqyZJPeCm4.jpg",

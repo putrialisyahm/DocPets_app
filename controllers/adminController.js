@@ -97,7 +97,7 @@ class AdminController {
   }
   async changeKlinikPhoto(token, req, res, next) {
     try {
-      const foto = req.file === undefined ? (token[0].dataValues.foto) : (req.file.filename);
+      const foto = req.file === undefined ? ("/img/defaultKlinik.jpeg") : ("/img/" + req.file.filename);
 
       const updateProfile = await Klinik.update(
         { foto: foto },

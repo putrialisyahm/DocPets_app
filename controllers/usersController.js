@@ -275,6 +275,7 @@ class UserController {
     try {
 
       let data = {
+        // id: Peliharaan[0].dataValues.id,
         nama: req.body.nama,
         gender: req.body.gender,
         jenis: req.body.jenis,

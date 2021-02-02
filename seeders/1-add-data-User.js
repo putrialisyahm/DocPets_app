@@ -202,6 +202,18 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
        },
+       {
+      nama: "Galuh Raka Siwa",
+      gender: "male",
+      email: "dokter@gmail.com",
+      telepon: "21123123",
+      foto: "default.png",
+      role: "dokter",
+      password: pass,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+
     ])
 
   },

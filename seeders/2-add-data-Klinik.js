@@ -5,7 +5,7 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('Kliniks', [{
       nama: "Klinik Peliharaan Sejati",
-      tentang: "klinik terbaik untuk para pria sejati",
+      tentang: "Rumah Sakit hewan terbaik yang lengkap untuk hewan peliharaan anda",
       lokasi: "Bandung",
       fasilitas: "toilet,whiskas gratis",
       foto: "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2F3%2F3e%2FHELIOS_ENDO-Klinik_Hamburg_Foto_2013_June_05.jpg&f=1&nofb=1",
@@ -14,7 +14,7 @@ module.exports = {
       updatedAt: new Date(),
     },
     {
-      nama: "RUMAH SAKIT HEWAN JAWA BARAT",
+      nama: "Rumah Sakit Hewan Jawa Barat",
       tentang: "Rumah Sakit Khusus Hewan Terbesar di Daerah Jawa Barat",
       lokasi: "Bandung",
       fasilitas: "Makanan Hewan, Animal Toys, Grooming, Sterilisasi",
@@ -34,7 +34,7 @@ module.exports = {
       adminId: 9,
     },
     {
-      nama: "RSH RAGUNAN",
+      nama: "RSH Ragunan",
       tentang: "Rumah Sakit hewan terbaik yang lengkap untuk hewan peliharaan anda",
       lokasi: "Jakarta",
       fasilitas: "general checkup, surgery, daycare, lab checking, ugd, vaksin, apotek, kremasi",
@@ -75,7 +75,7 @@ module.exports = {
       adminId: 13,
     },
     {
-      nama: "RS Hewan Setail Surabaya",
+      nama: "RSH Hewan Setail Surabaya",
       tentang: "Dengan peralatan yang memadai dan tenaga medis yang berpengalaman, tarif layanan perawatan hewan kesayangan di tempat milik Pemprov Jatim ini juga terjangkau.",
       lokasi: "Surabaya",
       fasilitas: "pemeriksaan hewan, vaksin",
@@ -93,6 +93,7 @@ module.exports = {
      * Add commands to revert seed here.
      *
      * Example:
+     * 
      * await queryInterface.bulkDelete('People', null, {});
      */
   }

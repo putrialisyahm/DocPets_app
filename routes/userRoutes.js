@@ -289,5 +289,4 @@ router.use((err, req, res, next) => {
 // router.get('/auth/google',passport.authenticate('google', { session: false, scope: ['profile','email'] }));
 // router.get('auth/google/callback', passport.authenticate('google', { session: false, failureRedirect: '/failed' }), usersController.login);
 
-
 module.exports = router; // Export router

@@ -56,7 +56,6 @@ class AppointmentController {
     async acceptAppointment(user, req, res, next) {
         try {
             const Op = Sequelize.Op
-            console.log(req.body.diterima)
             const acceptAppointment = await Appointment.update(
                 { diterima: req.body.diterima }, {
                 where: {
@@ -67,9 +66,13 @@ class AppointmentController {
                     }]
                 },
             })
-
-            // If success, it will return user's Profile
+            console.log(acceptAppointment)
+            if (acceptAppointment[0] === 0) {
+                sendResponse("Appointment Not Found", 200, acceptAppointment, res);
+            };
             sendResponse("Success accepting Appointment", 200, acceptAppointment, res);
+            // If success, it will return user's Profile
+
         } catch (error) {
             // If error, it will return the message of error
             const message = {
@@ -150,7 +153,7 @@ class AppointmentController {
                 waktu: req.body.waktu,
 
             })
-            
+
             sendResponse("Update Appointment success!", 200, result, res);
         } catch (error) {
             const message = {

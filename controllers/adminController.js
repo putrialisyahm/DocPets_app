@@ -113,6 +113,7 @@ class AdminController {
       sendError(message, 501, next)
     }
   }
+
   async addAdminToKlinik(token, req, res, next) {
     try {
       const admin = req.body.adminId
@@ -126,6 +127,23 @@ class AdminController {
     } catch (error) {
       const message = {
         message: "Something went wrong when Adding Admiin to Klnik",
+        error: error.message
+      }
+      sendError(message, 501, next)
+    }
+  }
+  async getAllDokter(token, req, res, next) {
+    try {
+
+      const result = await User.findAll(
+        {
+          where: { role: "dokter" },
+          attributes: ['id', 'nama', 'email', 'foto', "role", "telepon", "gender", "waktuKerja", "pengalaman", "status"]
+        })
+      sendResponse("Get All Dokter Success", 200, result, res);
+    } catch (error) {
+      const message = {
+        message: "Something went wrong when accessing dokter",
         error: error.message
       }
       sendError(message, 501, next)

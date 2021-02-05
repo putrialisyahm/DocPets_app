@@ -46,6 +46,37 @@ class UserController {
     }
 
   }
+  async createDokterAccount(newUser, req, res, next) {
+    // get the req.user from passport authentication
+    try {
+      let createdUser = await User.create({
+        nama: req.body.nama,
+        email: req.body.email,
+        password: req.body.password,
+        telepon: req.body.telepon,
+        role: "dokter",
+        gender: req.body.gender.toLowerCase().trim(),
+      });
+
+      // Find new user that have been created in advance
+      let newUser = await User.findAll({
+        where: {
+          id: createdUser.id
+        },
+        attributes: ['id', 'nama', 'email', 'foto', 'role', "gender"]
+      });
+
+      sendResponse("creating Dokter Account success!", 200, newUser, res);
+    } catch (error) {
+
+      const message = {
+        message: "Something went wrong when creating in dokter Account",
+        error: error.errors[0].message
+      }
+      sendError(message, 501, next)
+    }
+
+  }
 
   // If user pass the signup or login authorization, it will go to this function to create and get token
   async login(user, req, res, next) {

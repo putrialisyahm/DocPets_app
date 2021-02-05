@@ -38,6 +38,7 @@ router.post("/addKlinik/", [adminValidator.addKlinik, function (req, res, next) 
 },
 ]);
 
+
 router.delete("/deleteKlinik/", [adminValidator.deleteKlinik, function (req, res, next) {
     passport.authenticate(
         "checkAdmin",
@@ -137,6 +138,34 @@ router.put("/addAdminToKlinik/", [adminValidator.addAdminToKlinik, function (req
         }
     )(req, res, next);
 },
+]);
+
+router.get("/getAllDokter", [
+    function (req, res, next) {
+        passport.authenticate(
+            "checkAdmin",
+            {
+                session: false,
+            },
+            function (err, user, info) {
+                if (err) {
+                    return next(err);
+                }
+                if (!user) {
+                    res.status(401).json({
+                        message: info.message,
+                        success: false,
+                        code: 401
+                    });
+                    return;
+                }
+
+                adminController.getAllDokter(user, req, res, next);
+
+
+            }
+        )(req, res, next);
+    },
 ]);
 
 

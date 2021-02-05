@@ -1,5 +1,5 @@
 const { param, check, validationResult, matchedData, sanitize } = require('express-validator'); //form validation & sanitize form params
-const { User, Klinik } = require('../../models/') // Import user model
+const { User, Klinik, Appointment } = require('../../models/') // Import user model
 const moment = require('moment');
 const multer = require("multer");
 const path = require("path");
@@ -43,7 +43,19 @@ module.exports = {
         }
     ],
     acceptAppointment: [
-        check('appointmentId', 'Klinik Not Exist').exists().isNumeric(),
+        check('appointmentId', 'Appointment Not Exist').exists().isNumeric().custom(value => {
+            return Appointment.findAll({
+                where: {
+                    id: value
+                },
+            }).then(userLogin => {
+                if (userLogin.length === 0) {
+                    return false;
+                };
+                return true;
+            })
+        }),
+        check('diterima', 'diterima must be boolean').exists().isBoolean(),
         (req, res, next) => {
             const errors = validationResult(req); // Collect errors from check function
             // If errors is not null, it will be return errors response

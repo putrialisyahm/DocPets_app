@@ -1,4 +1,4 @@
-const {
+ const {
     User,
     Peliharaan,
     Klinik,
@@ -66,7 +66,6 @@ class AppointmentController {
                     }]
                 },
             })
-            console.log(acceptAppointment)
             if (acceptAppointment[0] === 0) {
                 sendResponse("Appointment Not Found", 200, acceptAppointment, res);
             };

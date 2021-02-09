@@ -31,7 +31,6 @@ let token;
         })
         .end((err, res) => {
           token = res.body.result.token;
-          console.log(res.body)
           res.should.have.status(200); // Response Success
           res.body.should.be.an('object'); // Body Response should be an object
           res.body.should.have.property('success'); // Body Response should have 'status' property
@@ -44,31 +43,29 @@ let token;
   })
 
 
-
-//   describe('/Post Add Appointment', () => {
-//     it('it should Add Appointment', (done) => {
-//       chai.request(server) // request to server (index.js)
-//         .post('/appointment/addAppointment')
-//         .send({
-//           klinikId: 1,
-//           dokterId: 5,
-//           peliharaanId: '1',
-//           date: '2021-02-11T12:00:00.000'
-//         })
-//         .set('Authorization', ('Bearer '+ token))
-//         .end((err, res) => {
-// //          token = res.body.result.token;
-//           console.log(res.body)
-//           res.should.have.status(200); // Response Success
-//           res.body.should.be.an('object'); // Body Response should be an object
-//           res.body.should.have.property('success'); // Body Response should have 'status' property
-//           // res.body.should.have.property('token'); // Body Response should have 'data' property
-//           done();
-//         })
+  describe('/Post Add Appointment', () => {
+    it('it should Add Appointment', (done) => {
+      chai.request(server) // request to server (index.js)
+        .post('/appointment/addAppointment')
+        .send({
+          klinikId: 1,
+          dokterId: 5,
+          peliharaanId: '1',
+          date: '2021-02-11T14:00:00.000'
+        })
+        .set('Authorization', ('Bearer '+ token))
+        .end((err, res) => {
+//          token = res.body.result.token;
+          res.should.have.status(200); // Response Success
+          res.body.should.be.an('object'); // Body Response should be an object
+          res.body.should.have.property('success'); // Body Response should have 'status' property
+          // res.body.should.have.property('token'); // Body Response should have 'data' property
+          done();
+        })
         
-//     })
+    })
     
-//   })
+  })
 
   describe('/getAllAppointment', () => {
     it('it should get All Appointment', (done) => {
@@ -82,8 +79,6 @@ let token;
         // })
         .set('Authorization', ('Bearer '+ token))
         .end((err, res) => {
-//          token = res.body.result.token;
-          console.log(res.body)
           res.should.have.status(200); // Response Success
           res.body.should.be.an('object'); // Body Response should be an object
           res.body.should.have.property('success'); // Body Response should have 'status' property

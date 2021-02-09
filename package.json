@@ -26,12 +26,14 @@
   "devDependencies": {
     "chai": "^4.3.0",
     "chai-http": "^4.3.0",
-    "mocha": "^8.2.1"
+    "mocha": "^8.2.1",
+    "nyc": "^15.1.0"
   },
   "scripts": {
-    "test": "mocha ./tests/*.js --timeout 10000 --exit",
+    "test": "nyc mocha ./tests/*.js --timeout 10000 --exit",
     "dev": "nodemon -r ./index.js"
   },
+  
   "keywords": [],
   "author": "",
   "license": "ISC"

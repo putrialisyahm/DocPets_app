@@ -33,29 +33,6 @@ describe('Klinik', () => {
 
 // });
 
-  // describe('/Post Sign Up User', () => {
-  //   it('it should Sign Up a A user', (done) => {
-  //     chai.request(server) // request to server (index.js)
-  //       .post('/user/signup')
-  //       .send({
-  //         email: 'test@test.com',
-  //         password: 'password',
-  //         passwordConfirmation: 'password',
-  //         nama: 'user Full Name',
-  //         telepon: "0801810",
-  //         role: "user",
-  //         gender: "female",
-  //       })
-  //       .end((err, res) => {
-  //         console.log(res.body)
-  //         res.should.have.status(200); // Response should have status 200
-  //         res.body.should.be.an('object'); // Body Response should be an object
-  //         res.body.should.have.property('success'); // Body Response should have 'status' property
-  //         // res.body.should.have.property('token'); // Body Response should have 'data' property
-  //         done();
-  //       });
-  //   });
-  // });
 
   let token;
   describe('/Post Login User Admin', () => {
@@ -68,8 +45,6 @@ describe('Klinik', () => {
         })
         .end((err, res) => {
           token = res.body.result.token;
-          console.log(res.body)
-          console.log(res.body.result.token)
           res.should.have.status(200); // Response Success
           res.body.should.be.an('object'); // Body Response should be an object
           res.body.should.have.property('success'); // Body Response should have 'status' property
@@ -120,7 +95,6 @@ describe('Klinik', () => {
         .set('Authorization', ('Bearer '+ token))
         .end((err, res) => {
           
-          console.log(res.body.result.token)
           res.should.have.status(200); // Response Success
           res.body.should.be.an('object'); // Body Response should be an object
           res.body.should.have.property('success'); // Body Response should have 'status' property
@@ -142,7 +116,6 @@ describe('/admin/deleteKlinik', () => {
       })
       .set('Authorization', ('Bearer '+ token))
       .end((err, res) => {
-        console.log(res.body)
         res.should.have.status(200); // Response Success
         res.body.should.be.an('object'); // Body Response should be an object
         res.body.should.have.property('success'); // Body Response should have 'status' property

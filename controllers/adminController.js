@@ -66,7 +66,7 @@ class AdminController {
       }
 
       const result = await Klinik.create(data)
-      console.log(result);
+      // console.log(result);
       sendResponse("klinik Added Succesfully", 200, {}, res);
     } catch (error) {
       const message = {

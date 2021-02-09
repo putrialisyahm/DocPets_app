@@ -98,7 +98,6 @@ describe('/get Klinik by id', () => {
         })
         .end((err, res) => {
           token = res.body.result.token;
-          console.log(res.body)
           res.should.have.status(200); // Response Success
           res.body.should.be.an('object'); // Body Response should be an object
           res.body.should.have.property('success'); // Body Response should have 'status' property

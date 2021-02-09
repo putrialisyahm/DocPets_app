@@ -233,7 +233,6 @@ class UserController {
       const validate = await bcrypt.compare(req.body.oldPassword, token[0].dataValues.password);
 
 
-      console.log(validate)
       if (!validate) {
         sendResponse("Wrong Password", 401, {}, res);
       }
@@ -315,7 +314,6 @@ class UserController {
 
 
       const result = await Peliharaan.create(data)
-      console.log(result);
       sendResponse("Pets Added Succesfully", 200, {}, res);
     } catch (error) {
       const message = {

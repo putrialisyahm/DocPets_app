@@ -47,7 +47,6 @@ describe('Admin', () => {
   //         gender: "female",
   //       })
   //       .end((err, res) => {
-  //         console.log(res.body)
   //         res.should.have.status(200); // Response should have status 200
   //         res.body.should.be.an('object'); // Body Response should be an object
   //         res.body.should.have.property('success'); // Body Response should have 'status' property
@@ -68,8 +67,6 @@ describe('Admin', () => {
         })
         .end((err, res) => {
           token = res.body.result.token;
-          console.log(res.body)
-          console.log(res.body.result.token)
           res.should.have.status(200); // Response Success
           res.body.should.be.an('object'); // Body Response should be an object
           res.body.should.have.property('success'); // Body Response should have 'status' property
@@ -82,12 +79,6 @@ describe('Admin', () => {
     
   })
 
-
- 
-
-
-
-
 describe('/Post acceptAppointment', () => {
   it('it should acceptAppointment', (done) => {
     chai.request(server) // request to server (index.js)
@@ -99,8 +90,6 @@ describe('/Post acceptAppointment', () => {
       .set('Authorization', ('Bearer '+ token))
       .end((err, res) => {
         // token = res.body.result.token;
-        console.log(res.body)
-        console.log(res.body.result.token)
         res.should.have.status(200); // Response Success
         res.body.should.be.an('object'); // Body Response should be an object
         res.body.should.have.property('success'); // Body Response should have 'status' property
@@ -124,9 +113,6 @@ describe('/Post getAllappointmentForDoktert', () => {
       // })
       .set('Authorization', ('Bearer '+ token))
       .end((err, res) => {
-        // token = res.body.result.token;
-        // console.log(res.body)
-        // console.log(res.body.result.token)
         res.should.have.status(200); // Response Success
         res.body.should.be.an('object'); // Body Response should be an object
         res.body.should.have.property('success'); // Body Response should have 'status' property
